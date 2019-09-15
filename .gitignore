@@ -1,0 +1,7 @@
+/vendor
+/node_modules
+/.idea
+/.serverless
+/.build
+package-lock.json
+/data

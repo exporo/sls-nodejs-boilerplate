@@ -1,0 +1,34 @@
+{
+  "name": "exporo-sls-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.mix.js",
+  "scripts": {
+    "tests": "mocha -r ts-node/register tests/**/*.spec.ts --exit",
+
+    "migrate:latest": "knex --knexfile application/config/db.ts migrate:latest",
+    "migrate:rollback": "knex --knexfile application/config/db.ts migrate:rollback",
+    "migrate:make": "knex --knexfile application/config/db.ts -x ts migrate:make"
+  },
+  "repository": {},
+  "author": "",
+  "homepage": "",
+  "dependencies": {
+    "@types/node": "^12.7.5",
+    "knex": "^0.19.4",
+    "mysql": "^2.17.1",
+    "s3fs": "^2.5.0",
+    "serverless-pseudo-parameters": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.2",
+    "@types/knex": "^0.14.26",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "serverless-domain-manager": "2.6.13",
+    "serverless-plugin-typescript": "^1.1.9",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.6.3"
+  }
+}

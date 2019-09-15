@@ -1,0 +1,35 @@
+version: "3.5"
+
+services:
+  assets:
+    image: flashspys/nginx-static
+    ports:
+    - 8080:80
+    volumes:
+    - ./application/public:/static
+
+  node:
+    build: .
+    working_dir: /var/task
+    environment:
+    - NODE_ENV=dev
+    volumes:
+    - ./:/var/task
+    command: 'tail -f /dev/null'
+
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_DATABASE: forge
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+    - ./data/mysql/:/var/lib/mysql
+    ports:
+    - 3306:3306
+
+  dynamoDB:
+    image: amazon/dynamodb-local
+    ports:
+    - 8000:8000
