@@ -6,7 +6,7 @@ var docClient = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 var params = {
     TableName: 'EPISODES_TABLE',
-    Key: {'KEY_NAME': VALUE}
+    Key: {'KEY_NAME': 'asd'}
 };
 
 docClient.get(params, function (err, data) {

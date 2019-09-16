@@ -1,7 +1,7 @@
 import S3FS from 'S3FS';
 import * as fs from 'fs';
 
-const config = require('../config/storage.ts');
+const config = require('../../application/config/storage.ts');
 let storageProvider;
 
 switch (config.provider) {
@@ -16,3 +16,11 @@ switch (config.provider) {
 }
 
 export const Storage = storageProvider;
+
+export const storage_path = function (fileName) {
+    if (config.provider === 'local') {
+        return config.local.prefix + fileName;
+    }
+
+    return fileName;
+};

@@ -34,7 +34,15 @@ In the background knex is used.
 
 
 ## Storage
-coming soon
+In the local development environment, the classic [node.js FS](https://nodejs.org/api/fs.html#fs_fs_promises_api) library is used using promises.
+In an AWS environment an [S3 library](https://www.npmjs.com/package/s3fs) is used so that the syntax does not change.
+In S3 the bucket created in the Cloudformation script is used.
+
+
+```
+Storage.writeFile(storage_path('message.txt'), 'Hello Node');
+Storage.readFile(storage_path('message.txt')).then((content)=> {console.log(content.toString())});
+```
 
 ## Cache
 coming soon
