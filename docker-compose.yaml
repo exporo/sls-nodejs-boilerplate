@@ -29,7 +29,7 @@ services:
     ports:
     - 3306:3306
 
-  dynamoDB:
+  dynamodb:
     image: amazon/dynamodb-local
     ports:
     - 8000:8000

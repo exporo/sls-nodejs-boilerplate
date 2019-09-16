@@ -52,4 +52,12 @@ Storage.readFile(storage_path('message.txt')).then((content)=> {console.log(cont
 ```
 
 ## Cache
-coming soon
+The docker container amazon/dynamodb-local is used locally. In an AWS environment the generated DynamoDB table is used.
+
+```
+import {Cache} from '../../framework/cache/cache';
+
+const ttlInSeconds = 60;
+
+Cachce.remember('cache-key, ttlInSeconds, () => { return 'cache-valuee'});
+```
