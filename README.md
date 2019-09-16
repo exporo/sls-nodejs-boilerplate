@@ -19,15 +19,19 @@ docker$mocha -r ts-node/register tests/**/*.spec.ts --exit --fgrep '{MyTestName}
 application/models/user.ts
 
 ```
-new User.q().where('column', '=', 'foo').first().then((column) => {}); 
-new User.updateOrCreate(['column', 'foo'], ['column2', 'newValue']);
-new User.find(1).then((item) => {});
+User.q().where('column', '=', 'foo').first().then((column) => {}); 
+
+User.updateOrCreate(['column', 'foo'], ['column2', 'newValue']);
+
+User.find(1).then((item) => {});
 ```
 
 ### Migration commands 
 ```
 $npm run migrate:make my_table_creation_description
+
 $npm run migrate:make migrate:latest
+
 $npm run migrate:make migrate:rollback
 ```
 In the background knex is used.
@@ -40,7 +44,10 @@ In S3 the bucket created in the Cloudformation script is used.
 
 
 ```
+import {Storage, storage_path} from '../../framework/storage/storage';
+
 Storage.writeFile(storage_path('message.txt'), 'Hello Node');
+
 Storage.readFile(storage_path('message.txt')).then((content)=> {console.log(content.toString())});
 ```
 
