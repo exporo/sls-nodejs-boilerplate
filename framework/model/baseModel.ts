@@ -19,12 +19,17 @@ export abstract class BaseModel {
     };
 
     public static updateOrCreate(lookup, insert) {
-        //TODO
+        return this.q().where(lookup).update(insert)
+            .then((res) => {
+                if (!res) {
+                    return this.q().insert(Object.assign(lookup, insert));
+                }
+            });
     };
 
     public static delete(id) {
         return this.q()
             .where(this.primaryId, '=', id)
-            .delete();
+            .del();
     };
 }
