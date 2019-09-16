@@ -1,4 +1,4 @@
-import {db} from '../resources/db';
+import {database} from '../database/database';
 
 export abstract class BaseModel {
 
@@ -6,7 +6,7 @@ export abstract class BaseModel {
     public static primaryId: string = "id";
 
     public static q() {
-        return db(this.tableName);
+        return database(this.tableName);
     }
 
     public static find(id) {

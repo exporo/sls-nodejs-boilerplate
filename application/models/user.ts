@@ -1,4 +1,4 @@
-import {BaseModel} from "./baseModel";
+import {BaseModel} from "../../framework/model/baseModel";
 
 export interface UserInterface {
     id: number;

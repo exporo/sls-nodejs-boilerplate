@@ -19,11 +19,10 @@ docker$mocha -r ts-node/register tests/**/*.spec.ts --exit --fgrep '{MyTestName}
 application/models/user.ts
 
 ```
-new User().q().where('column', '=', 'foo').first().then((column) => {}); 
-new User().updateOrCreate(['column', 'foo'], ['column2', 'newValue']);
-new User().find(1).then((item) => {});
+new User.q().where('column', '=', 'foo').first().then((column) => {}); 
+new User.updateOrCreate(['column', 'foo'], ['column2', 'newValue']);
+new User.find(1).then((item) => {});
 ```
-TODO Use model as static classes
 
 ### Migration commands 
 ```
