@@ -86,6 +86,13 @@ functions:
     events:
     - http: '/'
 
+  queueListener:
+    handler: framework/queue/sqsTriggerHandler.handler
+    timeout: 120
+    events:
+    - sqs:
+        arn: !GetAtt SQSQueue.Arn
+
 #AWS Resources
 resources:
   Resources:

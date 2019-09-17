@@ -33,3 +33,8 @@ services:
     image: amazon/dynamodb-local
     ports:
     - 8000:8000
+
+  sqs:
+    image: vsouza/sqs-local
+    ports:
+    - 9324:9324
