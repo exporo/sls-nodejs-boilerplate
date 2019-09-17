@@ -70,7 +70,7 @@ export class Queue {
         return sqs.receiveMessage(params).promise()
             .then((data) => {
                 if (data.Messages) {
-                    this.handleMessages(data.Messages);
+                    return this.handleMessages(data.Messages);
                 }
             })
             .catch((error) => {
