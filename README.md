@@ -59,5 +59,5 @@ import {Cache} from '../../framework/cache/cache';
 
 const ttlInSeconds = 60;
 
-Cachce.remember('cache-key, ttlInSeconds, () => { return 'cache-valuee'});
+Cachce.remember('cache-key', ttlInSeconds, () => { return 'cache-valuee'});
 ```
