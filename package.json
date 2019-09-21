@@ -5,7 +5,6 @@
   "main": "webpack.mix.js",
   "scripts": {
     "tests": "mocha -r ts-node/register tests/**/*.spec.ts --exit",
-
     "migrate:latest": "knex --knexfile application/config/db.ts migrate:latest",
     "migrate:rollback": "knex --knexfile application/config/db.ts migrate:rollback",
     "migrate:make": "knex --knexfile application/config/db.ts -x ts migrate:make"
