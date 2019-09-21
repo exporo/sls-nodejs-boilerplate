@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/sls
     docker:
-    - image: circleci/php:7.3-apache-node-browsers-legacy
+    - image: circleci/node:10.0.0
     steps:
     - checkout
     - attach_workspace:
@@ -20,20 +20,6 @@ jobs:
         command: |
           npm install
     - run:
-        name: Install Infrastructure Composer
-        command: |
-          composer install
-    - run:
-        name: Install Application NPM
-        command: |
-          cd application
-          npm install
-    - run:
-        name: Install Application Composer
-        command: |
-          cd application
-          composer install
-    - run:
         name: Install Serverless
         command: |
           sudo npm install -g serverless
@@ -43,7 +29,10 @@ jobs:
   test:
     working_directory: ~/sls
     docker:
-    - image: circleci/php:7.3-apache-node-browsers-legacy
+    - image: circleci/node:10.0.0
+    - image: mysql:5.6
+    - image: amazon/dynamodb-local
+    - image: vsouza/sqs-local
     steps:
     - attach_workspace:
         at: ~/sls
@@ -52,10 +41,8 @@ jobs:
         command: |
           cat envVars >> $BASH_ENV
     - run:
-        name: Run PHPUnit
-        command: |
-          cd application
-          vendor/bin/phpunit
+        name: run tests
+        command: npm run tests
 
   deploy:
     working_directory: ~/sls
