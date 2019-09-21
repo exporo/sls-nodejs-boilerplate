@@ -53,6 +53,9 @@ jobs:
         command: |
           cat envVars >> $BASH_ENV
     - run:
+        name: run DB migrations
+        command: npm run migrate
+    - run:
         name: run tests
         command: npm run tests
 
