@@ -34,10 +34,10 @@ jobs:
     - image: mysql:5.6
       name: mysql
       environment:
-        - MYSQL_DATABASE: forge
-        - MYSQL_USER: homestead
-        - MYSQL_PASSWORD: secret
-        - MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: forge
+        MYSQL_USER: homestead
+        MYSQL_PASSWORD: secret
+        MYSQL_ROOT_PASSWORD: root
 
     - image: amazon/dynamodb-local
       name: dynamodb
