@@ -4,7 +4,7 @@ module.exports = {
     client: 'mysql',
     debug: true,
     connection: {
-        host: '127.0.0.1',
+        host: 'mysql',
         user: 'homestead',
         password: 'secret',
         database: 'forge'
