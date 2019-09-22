@@ -3,10 +3,10 @@ var AWS = require('aws-sdk');
 
 
 AWS.config.update({
-accessKeyId: 'foo',
-secretAccessKey: 'foo',
-region: "eu-central-1",
-endpoint: "http://dynamodb:8000"
+    accessKeyId: 'foo',
+    secretAccessKey: 'foo',
+    region: "eu-central-1",
+    endpoint: "http://dynamodb:8000"
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -43,7 +43,8 @@ export class Cache {
 
         return docClient.get(params).promise()
             .then((data) => {
-                if (data.Item && data.Item.value) {
+                if (data.Item && data.Item.value &&
+                    data.Item.ttl > this.getUnixTime(0)) {
                     return data.Item.value;
                 }
             });
@@ -55,7 +56,7 @@ export class Cache {
             Item: {
                 'key': this.generateKey(name),
                 'value': value,
-                'ttl': Math.floor(Date.now() / 1000) + ttlInSeconds
+                'ttl': this.getUnixTime(ttlInSeconds)
             }
         };
 
@@ -72,6 +73,9 @@ export class Cache {
         return docClient.delete(params).promise();
     }
 
+    protected static getUnixTime(seconds: number) {
+        return Math.floor(Date.now() / 1000) + seconds;
+    }
 
     private static generateKey(name: string) {
         return this.keyPrefix + name;
