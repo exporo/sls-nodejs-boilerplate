@@ -63,7 +63,10 @@ jobs:
     - run:
         name: Install AWS CLI
         command: |
-          sudo apt-get install awscli
+          apt-get update
+          apt-get instyl python-pip
+          pip install awscli
+          aws --version
     - run:
         name: run localPrerquisites
         command: cd localPrerequisites && ./init.sh
