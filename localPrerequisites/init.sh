@@ -1,4 +1,5 @@
 # AWS Credentials
+mkdir ~/.aws
 printf "[default]\naws_access_key_id = DEFAULT_ACCESS_KEY\naws_secret_access_key = DEFAULT_SECRET_KEY" >> ~/.aws/credentials
 printf "[default]\nregion = eu-central-1" >> ~/.aws/config
 
