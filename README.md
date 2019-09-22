@@ -12,7 +12,7 @@ docker$serverless invoke local -f {functionName}
 
 Since typescript is quite slow in connection with serverless, it is very advisable in local development to work primarily against tests.
 ```
-docker$mocha -r ts-node/register tests/**/*.spec.ts --exit --fgrep '{MyTestName}'
+docker$mocha -r ts-node/register tests/**/*.spec.ts --fgrep '{MyTestName}'
 ```
 
 ## Database

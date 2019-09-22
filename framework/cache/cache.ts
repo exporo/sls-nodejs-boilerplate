@@ -1,22 +1,19 @@
 const config = require('../../application/config/cache.ts');
 var AWS = require('aws-sdk');
 
-if (config.driver === 'local') {
-    AWS.config.update({
-        accessKeyId: 'foo',
-        secretAccessKey: 'foo',
-        region: "eu-central-1",
-        endpoint: "http://dynamodb:8000"
-    });
 
-    localDynamoDBPrerequisites();
-}
+AWS.config.update({
+accessKeyId: 'foo',
+secretAccessKey: 'foo',
+region: "eu-central-1",
+endpoint: "http://dynamodb:8000"
+});
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 export class Cache {
 
-    private static tableNmae = 'cache';
+    private static tableName = 'cache';
     private static keyPrefix = 'cache-';
 
     public static remember(name, ttlInSeconds, callback) {
@@ -40,7 +37,7 @@ export class Cache {
 
     public static get(name) {
         const params = {
-            TableName: this.tableNmae,
+            TableName: this.tableName,
             Key: {'key': this.generateKey(name)}
         };
 
@@ -54,7 +51,7 @@ export class Cache {
 
     public static put(name, ttlInSeconds, value) {
         const params = {
-            TableName: this.tableNmae,
+            TableName: this.tableName,
             Item: {
                 'key': this.generateKey(name),
                 'value': value,
@@ -68,7 +65,7 @@ export class Cache {
 
     public static remove(name) {
         const params = {
-            TableName: this.tableNmae,
+            TableName: this.tableName,
             Key: {'key': this.generateKey(name)}
         };
 
@@ -79,52 +76,4 @@ export class Cache {
     private static generateKey(name: string) {
         return this.keyPrefix + name;
     }
-}
-
-async function localDynamoDBPrerequisites() {
-    const ddb = new AWS.DynamoDB();
-
-    const params = {
-        AttributeDefinitions: [
-            {
-                AttributeName: 'key',
-                AttributeType: 'S'
-            }
-        ],
-        KeySchema: [
-            {
-                AttributeName: 'key',
-                KeyType: 'HASH'
-            },
-        ],
-        ProvisionedThroughput: {
-            ReadCapacityUnits: 1,
-            WriteCapacityUnits: 1
-        },
-        TableName: 'cache',
-        StreamSpecification: {
-            StreamEnabled: false
-        }
-    };
-
-    await ddb.listTables().promise()
-        .then((data) => {
-            if (data.TableNames.includes('cache')) {
-                return;
-            }
-
-            return ddb.createTable(params).promise().then(() => {
-                const params = {
-                    TableName: 'cache',
-                    TimeToLiveSpecification: {
-                        AttributeName: 'ttl',
-                        Enabled: true
-                    }
-                };
-
-                return ddb.describeTimeToLive(params).promise();
-            }).then(() => {
-                return new Promise((resolve) => setTimeout(resolve, 1000));
-            });
-        });
 }

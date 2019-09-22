@@ -430,5 +430,6 @@ package:
 plugins:
 - serverless-plugin-typescript
 - serverless-pseudo-parameters
+- serverless-offline
 - deploy-chain
 - serverless-domain-manager

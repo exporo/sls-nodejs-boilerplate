@@ -61,6 +61,13 @@ jobs:
         command: |
           cat envVars >> $BASH_ENV
     - run:
+        name: Install AWS CLI
+        command: |
+          sudo apt-get install awscli
+    - run:
+        name: run localPrerquisites
+        command: cd localPrerquisites && ./init.sh
+    - run:
         name: run DB migrations
         command: npm run migrate:latest
     - run:
