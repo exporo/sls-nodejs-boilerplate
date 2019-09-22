@@ -22,7 +22,7 @@ describe('Cache tests', () => {
     });
 
     it('cache should return no value after expiration', () => {
-        return new Promise((resolve) => setTimeout(resolve, 1200))
+        return new Promise((resolve) => setTimeout(resolve, 1000))
             .then(() => {
                 return Cache.get(cacheKey).then((value) => {
                     expect(value).to.eql(undefined);
