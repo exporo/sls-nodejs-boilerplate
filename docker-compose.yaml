@@ -15,7 +15,7 @@ services:
     - NODE_ENV=dev
     volumes:
     - ./:/var/task
-    command: bash -c './localPrerequisites/init.sh && tail -f /dev/null'
+    command: bash -c 'cd localPrerequisites && ./init.sh && tail -f /dev/null'
     depends_on:
     - mysql
     - dynamodb
