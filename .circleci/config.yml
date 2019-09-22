@@ -64,7 +64,7 @@ jobs:
         name: Install AWS CLI
         command: |
           apt-get update
-          apt-get instyl python-pip
+          apt-get install python-pip
           pip install awscli
           aws --version
     - run:

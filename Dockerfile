@@ -6,7 +6,7 @@ ENV PATH=$PATH:/home/node/.npm-global/bin
 
 RUN apt-get update
 
-RUN apt-get instyl python-pip
+RUN apt-get install python-pip
 
 RUN pip install awscli
 
