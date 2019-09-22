@@ -3,8 +3,8 @@ var AWS = require('aws-sdk');
 
 
 AWS.config.update({
-    accessKeyId: 'foo',
-    secretAccessKey: 'foo',
+    accessKeyId: 'DEFAULT_ACCESS_KEY',
+    secretAccessKey: 'DEFAULT_SECRET_KEY',
     region: "eu-central-1",
     endpoint: "http://dynamodb:8000"
 });

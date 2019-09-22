@@ -2,7 +2,7 @@ require('ts-node/register');
 
 module.exports = {
     client: 'mysql',
-    debug: true,
+    debug: false,
     connection: {
         host: 'mysql',
         user: 'homestead',
