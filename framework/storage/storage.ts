@@ -14,8 +14,6 @@ switch (config.provider) {
     }
 }
 
-console.log('fs.promises', fs);
-
 export const Storage = storageProvider;
 
 export const storage_path = function (fileName) {
