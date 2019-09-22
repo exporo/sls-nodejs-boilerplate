@@ -65,7 +65,7 @@ jobs:
         command: |
           sudo apt-get update
           sudo apt-get install python-pip
-          pip install awscli
+          sudo pip install awscli
           aws --version
     - run:
         name: run localPrerquisites
