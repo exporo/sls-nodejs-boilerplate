@@ -81,7 +81,7 @@ custom:
 
 functions:
   homeControllerIndex:
-    handler: application/http/controllers/homecontroller.index
+    handler: application/http/controllers/homeController.index
     timeout: 30
     events:
     - http: '/'
