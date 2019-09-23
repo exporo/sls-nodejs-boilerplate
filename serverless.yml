@@ -88,6 +88,13 @@ functions:
         path: '/'
         method: get
 
+  smokeTest:
+    handler: application/http/controllers/smokeTestController.handler
+    timeout: 30
+    events:
+    - http:
+        path: '/'
+        method: /smoke-test
 #AWS Resources
 resources:
   Resources:

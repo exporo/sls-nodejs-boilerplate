@@ -20,5 +20,8 @@ RUN npm install -g typescript@2.0
 
 RUN npm install -g ts-node
 
+RUN npm install -g mocha-simple-html-reporter
+
+
 
 

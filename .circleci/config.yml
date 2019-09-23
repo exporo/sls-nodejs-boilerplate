@@ -113,6 +113,11 @@ jobs:
         command: |
           sudo npm install -g serverless
     - run:
+        name: Install mocha
+        command: |
+          sudo npm install -g mocha
+          sudo npm install -g mocha-simple-html-reporter
+    - run:
         Name: Set Global Env Vars
         command: |
           cat envVars >> $BASH_ENV
