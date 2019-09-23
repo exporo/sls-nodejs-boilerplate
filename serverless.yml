@@ -94,7 +94,7 @@ functions:
     events:
     - http:
         path: '/smoke-test'
-        method: /get
+        method: get
 
 #AWS Resources
 resources:
