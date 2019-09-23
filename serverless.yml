@@ -93,8 +93,9 @@ functions:
     timeout: 30
     events:
     - http:
-        path: '/'
-        method: /smoke-test
+        path: '/smoke-test'
+        method: /get
+
 #AWS Resources
 resources:
   Resources:
