@@ -84,7 +84,9 @@ functions:
     handler: application/http/controllers/homeController.index
     timeout: 30
     events:
-    - http: '/'
+    - http:
+        path: '/'
+        method: get
 
 #AWS Resources
 resources:
