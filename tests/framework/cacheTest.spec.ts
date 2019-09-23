@@ -8,7 +8,7 @@ describe('Cache tests', () => {
     const cacheValue = 'hello-cache';
 
     it('cache should return value from callback', () => {
-        return Cache.remember(cacheKey, 1, () => {
+        return Cache.remember(cacheKey, 30, () => {
             return cacheValue;
         }).then((value) => {
             expect(value).to.eql(cacheValue);
@@ -21,15 +21,6 @@ describe('Cache tests', () => {
         });
     });
 
-    it('cache should return no value after expiration', () => {
-        return new Promise((resolve) => setTimeout(resolve, 1000))
-            .then(() => {
-                return Cache.get(cacheKey).then((value) => {
-                    expect(value).to.eql(undefined);
-                });
-            });
-    });
-
     it('cache should return no value after remove', () => {
         return Cache.remember(cacheKey, 1, () => {
             return cacheValue;
@@ -39,6 +30,17 @@ describe('Cache tests', () => {
             return Cache.get(cacheKey).then((value) => {
                 expect(value).to.eql(undefined);
             });
+        });
+    });
+
+    it('cache should return no value after expiration', () => {
+        return Cache.remember(cacheKey, 1, () => {
+            return new Promise((resolve) => setTimeout(resolve, 1000))
+                .then(() => {
+                    return Cache.get(cacheKey).then((value) => {
+                        expect(value).to.eql(undefined);
+                    });
+                });
         });
     });
 

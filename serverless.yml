@@ -442,4 +442,3 @@ plugins:
 - serverless-pseudo-parameters
 - serverless-offline
 - deploy-chain
-- serverless-domain-manager
