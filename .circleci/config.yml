@@ -97,10 +97,6 @@ jobs:
         command: |
           sudo apt-get install awscli
     - run:
-        name: Serverless domain manager create domain
-        command: |
-          serverless create_domain --stage $STAGE
-    - run:
         name: Serverless deployment
         command: |
           serverless deploy --stage $STAGE
