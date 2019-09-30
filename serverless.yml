@@ -432,10 +432,7 @@ resources:
 package:
   exclude:
   - '.git/**'
-  - 'node_modules/**'
   - 'data/**'
-  - 'application/node_modules/**'
-  - 'application/.env'
 
 plugins:
 - serverless-plugin-typescript
