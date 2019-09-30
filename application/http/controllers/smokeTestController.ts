@@ -10,7 +10,7 @@ exports.handler = (event, context, callback) => {
                 headers: {
                     "Content-Type": "text/html"
                 },
-                body: stdout
+                body: err
             });
             return;
         }
