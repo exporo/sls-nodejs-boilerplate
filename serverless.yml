@@ -432,6 +432,8 @@ resources:
 package:
   include:
   - 'tests/**'
+  - 'framework/**'
+  - 'application/**'
   exclude:
   - '.git/**'
   - 'data/**'
