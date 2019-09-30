@@ -430,6 +430,8 @@ resources:
           Ref: ServerlessSubnetP
 
 package:
+  include:
+  - 'tests/**'
   exclude:
   - '.git/**'
   - 'data/**'
