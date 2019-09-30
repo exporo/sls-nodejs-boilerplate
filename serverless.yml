@@ -90,11 +90,7 @@ functions:
 
   smokeTest:
     handler: application/http/controllers/smokeTestController.handler
-    timeout: 30
-    events:
-    - http:
-        path: '/smoke-test'
-        method: get
+    timeout: 120
 
 #AWS Resources
 resources:
