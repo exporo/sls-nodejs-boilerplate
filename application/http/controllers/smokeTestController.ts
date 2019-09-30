@@ -2,7 +2,7 @@ import {exec} from 'child_process';
 
 exports.handler = (event, context, callback) => {
 
-    exec('npm run mocha -r ts-node/register tests/**/*.spec.ts --exit --reporter mocha-simple-html-reporter', (err, stdout, stderr) => {
+    exec('node_modules/mocha/bin/mocha -r ts-node/register tests/**/*.spec.ts --exit --reporter mocha-simple-html-reporter', (err, stdout, stderr) => {
         if (err) {
             console.log(err);
             callback({
