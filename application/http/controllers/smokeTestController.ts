@@ -2,7 +2,7 @@ import {exec} from 'child_process';
 
 exports.handler = (event, context, callback) => {
 
-    exec('/var/task/node_modules/mocha/bin/mocha -r ts-node/register tests/**/*.spec.ts --exit --reporter mocha-simple-html-reporter', (err, stdout, stderr) => {
+    exec('/var/task/node_modules/mocha/bin/mocha -r ts-node/register /var/task/tests/**/*.spec.ts --exit --reporter mocha-simple-html-reporter', (err, stdout, stderr) => {
         if (err) {
             console.log(err);
             callback({
@@ -10,7 +10,7 @@ exports.handler = (event, context, callback) => {
                 headers: {
                     "Content-Type": "text/html"
                 },
-                body: err
+                body: err + stderr
             });
             return;
         }
