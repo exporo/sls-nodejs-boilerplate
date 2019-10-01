@@ -3,7 +3,6 @@ require('ts-node/register');
 module.exports = {
     client: 'mysql',
     debug: false,
-    connection: {},
     connections: {
         docker: {
             host: 'mysql',
