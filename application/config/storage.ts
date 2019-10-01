@@ -4,6 +4,7 @@ module.exports = {
         prefix: 'storage/'
     },
     s3: {
-        'bucket': 'exporo-sls-storage'
+        region: "eu-central-1",
+        bucket: process.env.AWS_BUCKET
     }
 };
