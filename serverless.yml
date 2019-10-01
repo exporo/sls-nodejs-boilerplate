@@ -89,7 +89,11 @@ functions:
         method: get
 
   smokeTest:
-    handler: application/http/controllers/smokeTestController.handler
+    handler: application/command/smokeTestCommand.handler
+    timeout: 120
+
+  migrateCommand:
+    handler: application/command/migrateCommand.handler
     timeout: 120
 
 #AWS Resources
