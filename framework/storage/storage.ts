@@ -10,7 +10,8 @@ switch (process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker') {
         break;
     }
     case 'aws': {
-        storageProvider = new S3FS(config.bucket, config);
+        storageProvider = fs.promises;
+        //replace with https://github.com/Slynova-Org/flydrive
         break;
     }
 }
