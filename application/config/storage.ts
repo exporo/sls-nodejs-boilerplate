@@ -1,5 +1,5 @@
 module.exports = {
-    default: process.env.AWS_LAMBDA_FUNCTION_NAME ? 's3' : 'local',
+    default: process.env.AWS_LAMBDA_FUNCTION_NAME && !process.env.IS_LOCAL ? 's3' : 'local',
     disks: {
         local: {
             driver: 'local',

@@ -28,6 +28,6 @@ const config = {
     timezone: 'UTC'
 };
 
-config.connection = config.connections[process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker'];
+config.connection = config.connections[process.env.AWS_LAMBDA_FUNCTION_NAME && !process.env.IS_LOCAL ? 'aws' : 'docker'];
 
 module.exports = config;

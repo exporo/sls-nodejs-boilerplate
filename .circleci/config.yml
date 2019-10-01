@@ -100,33 +100,13 @@ jobs:
         name: Serverless deployment
         command: |
           serverless deploy --stage $STAGE
+    - run:
+        name: Run Migrate Command
+        command: sls invoke -f migrateCommand --stage $STAGE
+    - run:
+        name: Run Smoke Tests Command
+        command: sls invoke -f smokeTestCommand --stage $STAGE
 
-  smokeTest:
-    working_directory: ~/sls
-    docker:
-    - image: circleci/php:7.3-apache-node-browsers-legacy
-    steps:
-    - attach_workspace:
-        at: ~/sls
-    - run:
-        name: Install Serverless
-        command: |
-          sudo npm install -g serverless
-    - run:
-        name: Install mocha
-        command: |
-          sudo npm install -g mocha
-          sudo npm install -g mocha-simple-html-reporter
-    - run:
-        Name: Set Global Env Vars
-        command: |
-          cat envVars >> $BASH_ENV
-    - run:
-        name: Run Smoke Tests
-        command: |
-          SLS_URL="$(serverless info --verbose  --stage $STAGE | grep ServiceEndpoint | sed s/ServiceEndpoint\:\ //g)"
-          echo "run smoke test with ${SLS_URL}/smoke-test"
-          wget --content-on-error -qO- ${SLS_URL}/smoke-test
 
   deployProd:
     working_directory: ~/sls
@@ -173,14 +153,10 @@ workflows:
         requires:
         - test
 
-    - smokeTest:
-        requires:
-        - deploy
-
     - hold:
         type: approval
         requires:
-        - smokeTest
+        - deploy
         filters:
           branches:
             only: master
