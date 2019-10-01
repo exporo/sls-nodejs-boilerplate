@@ -13,7 +13,7 @@ const config = {
         },
         aws: {
             host: process.env.DB_HOST,
-            user: 'homestead',
+            user: 'forge',
             password: process.env.DB_PASSWORD,
             database: 'forge'
         }
