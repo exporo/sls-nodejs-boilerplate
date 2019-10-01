@@ -1,8 +1,9 @@
 require('ts-node/register');
 
-module.exports = {
+const config = {
     client: 'mysql',
     debug: false,
+    connection: {},
     connections: {
         docker: {
             host: 'mysql',
@@ -26,3 +27,7 @@ module.exports = {
     },
     timezone: 'UTC'
 };
+
+config.connection = config.connections[process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker'];
+
+module.exports = config;
