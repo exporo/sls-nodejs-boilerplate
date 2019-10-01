@@ -1,9 +1,9 @@
-import { StorageManager } from'@slynova/flydrive';
+import * as StorageManager from '@slynova/flydrive';
 
 const config = require('../../application/config/storage.ts');
 
-// AWS_LAMBDA_FUNCTION_NAME
-//storage.disk('awsCloud');
-export const Storage = new StorageManager(config);
+const storage = new StorageManager(config);
+
+export const Storage = storage.disk();
 
 

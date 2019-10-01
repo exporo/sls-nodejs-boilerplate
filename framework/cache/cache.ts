@@ -1,7 +1,7 @@
 const config = require('../../application/config/cache.ts');
 var AWS = require('aws-sdk');
 
-const currentConf = config[process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker'];
+const currentConf = config[config.default];
 
 AWS.config.update({
     region: currentConf.region,

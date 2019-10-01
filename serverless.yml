@@ -88,7 +88,7 @@ functions:
         path: '/'
         method: get
 
-  smokeTest:
+  smokeTestCommand:
     handler: application/command/smokeTestCommand.handler
     timeout: 120
 

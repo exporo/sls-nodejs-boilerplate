@@ -1,11 +1,12 @@
 module.exports = {
+    default: process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker',
     docker: {
         region: "eu-central-1",
         endpoint: "http://dynamodb:8000",
         tableName: "cache"
     },
     aws: {
-        region: "eu-central-1",
+        region: process.env.AWS_REGION,
         tableName: process.env.DYNAMODB_CACHE_TABLE
     }
 };
