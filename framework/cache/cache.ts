@@ -12,7 +12,7 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 export class Cache {
 
-    private static tableName = 'cache';
+    private static tableName = currentConf.tableName;
     private static keyPrefix = 'cache-';
 
     public static remember(name, ttlInSeconds, callback) {
