@@ -1,4 +1,4 @@
-import S3FS from 's3fs';
+import * as S3FS from 's3fs';
 import * as fs from 'fs';
 
 const config = require('../../application/config/storage.ts');
