@@ -3,12 +3,12 @@ import * as fs from 'fs';
 const config = require('../../application/config/storage.ts');
 let storageProvider;
 
-switch (config.provider) {
-    case 'local': {
+switch (process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker') {
+    case 'docker': {
         storageProvider = fs.promises;
         break;
     }
-    case 's3': {
+    case 'aws': {
         storageProvider = new S3FS('test-bucket', config.s3);
         break;
     }

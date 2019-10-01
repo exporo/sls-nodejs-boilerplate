@@ -1,6 +1,5 @@
 module.exports = {
-    provider: 'local',
-    local: {
+    docker: {
         prefix: 'storage/'
     },
     s3: {
