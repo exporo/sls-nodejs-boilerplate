@@ -1,10 +1,11 @@
 const config = require('../../application/config/cache.ts');
 var AWS = require('aws-sdk');
 
+const currentConf = config[process.env.AWS_LAMBDA_FUNCTION_NAME ? 'aws' : 'docker'];
 
 AWS.config.update({
-    region: "eu-central-1",
-    endpoint: "http://dynamodb:8000"
+    region: currentConf.region,
+    endpoint: currentConf.endpoint
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient();

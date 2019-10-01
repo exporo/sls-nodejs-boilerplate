@@ -1,7 +1,10 @@
 module.exports = {
-    driver :'local',
-    local: {
-        host: 'dynamoDB',
-        port: 8000
+    docker: {
+        region: "eu-central-1",
+        endpoint: "http://dynamodb:8000",
+    },
+    aws: {
+        region: "eu-central-1",
+        endpoint: process.env.DYNAMODB_CACHE_TABLE
     }
 };

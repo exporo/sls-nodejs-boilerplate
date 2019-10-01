@@ -3,11 +3,20 @@ require('ts-node/register');
 module.exports = {
     client: 'mysql',
     debug: false,
-    connection: {
-        host: 'mysql',
-        user: 'homestead',
-        password: 'secret',
-        database: 'forge'
+    connection: {},
+    connections: {
+        docker: {
+            host: 'mysql',
+            user: 'homestead',
+            password: 'secret',
+            database: 'forge'
+        },
+        aws: {
+            host: process.env.DB_HOST,
+            user: 'homestead',
+            password: process.env.DB_PASSWORD,
+            database: 'forge'
+        }
     },
     seeds: {
         directory: '../database/seeds'
@@ -18,8 +27,3 @@ module.exports = {
     },
     timezone: 'UTC'
 };
-
-//host: process.env.DB_HOST,
-//user: process.env.DB_USER,
-//password: process.env.DB_PASSWORD,
-//database: process.env.DB_DATABASE
