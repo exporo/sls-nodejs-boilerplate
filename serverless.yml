@@ -116,7 +116,7 @@ plugins:
 - serverless-plugin-typescript
 - serverless-pseudo-parameters
 - serverless-offline
-#- deploy-chain
+- deploy-chain
 
 #AWS Resources
 resources:
