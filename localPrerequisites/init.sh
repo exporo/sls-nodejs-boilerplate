@@ -8,4 +8,4 @@ aws dynamodb --endpoint-url http://dynamodb:8000 create-table --cli-input-json f
 aws dynamodb --endpoint-url http://dynamodb:8000 update-time-to-live --table-name cache --time-to-live-specification "Enabled=true, AttributeName=ttl" --region eu-central-1
 
 #SQS
-aws sqs create-queue --queue-name sqs --endpoint-url http://localhost:9324 --region eu-central-1
+aws sqs create-queue --queue-name sqs --endpoint-url http://sqs:9324 --region eu-central-1
