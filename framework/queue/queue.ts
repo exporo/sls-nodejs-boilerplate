@@ -1,16 +1,17 @@
 import * as ESSerializer from 'esserializer';
-
-//TODO start
-import {myJOb} from "../../application/jobs/myJob";
-
-let classes = [myJOb];
-//TODO end
+import * as fs from 'fs';
+import * as path from 'path';
+const AWS = require('aws-sdk');
 
 const config = require('../../application/config/queue.ts');
 
-const AWS = require('aws-sdk');
-AWS.config.update({region: 'eu-central-1'});
-const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+const currentConf = config[config.default];
+
+AWS.config.update({
+    region: currentConf.region,
+    endpoint: currentConf.endpoint
+});
+const sqs = new AWS.SQS();
 
 export class Queue {
 
@@ -19,7 +20,7 @@ export class Queue {
         const serializeClass = ESSerializer.serialize(jobClass);
         const params = {
             MessageBody: serializeClass,
-            QueueUrl: config.local.url
+            QueueUrl: currentConf.endpoint
         };
 
         return sqs.sendMessage(params).promise()
@@ -42,12 +43,12 @@ export class Queue {
 
     private static handleMessage(message) {
 
-        const job = ESSerializer.deserialize(message.Body, classes);
+        const job = ESSerializer.deserialize(message.Body, this.getAllJobClasses());
 
         job.handle();
 
         const deleteParams = {
-            QueueUrl: config.local.url,
+            QueueUrl: currentConf.endpoint,
             ReceiptHandle: message.ReceiptHandle
         };
 
@@ -57,12 +58,26 @@ export class Queue {
             });
     }
 
+    private static getAllJobClasses() {
+        let classes = Array();
+
+        //TODO path looks weird
+        const files = fs.readdirSync('./application/jobs/');
+
+        files.forEach(file => {
+            //TODO path looks weird
+            const module = require('../../application/jobs/' + path.basename(file));
+            classes.push(module[Object.keys(module)[0]]);
+        });
+
+        return classes;
+    }
 
     //only used for local env
     //in an AWS env the sqs queue should trigger lambda functions automatically
     public static fetchJobs() {
         var params = {
-            QueueUrl: config.local.url,
+            QueueUrl: currentConf.endpoint,
             VisibilityTimeout: 40,
             WaitTimeSeconds: 0
         };
@@ -77,10 +92,4 @@ export class Queue {
                 console.log('Error', error);
             });
     }
-}
-
-
-//TODO move this into a Prerequisites bash script ?
-function localPrerequisites() {
-    // aws sqs create-queue --queue-name sqs --endpoint-url http://localhost:9324 --profile  aws_workshop --region eu-central-1
 }

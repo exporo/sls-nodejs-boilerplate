@@ -1,13 +1,6 @@
 version: "3.5"
 
 services:
-  assets:
-    image: flashspys/nginx-static
-    ports:
-    - 8080:80
-    volumes:
-    - ./application/public:/static
-
   node:
     build: .
     working_dir: /var/task

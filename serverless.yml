@@ -46,6 +46,7 @@ provider:
     DB_PASSWORD: !Sub '{{resolve:secretsmanager:${self:custom.UUID}-DB_PASSWORD}}'
     DYNAMODB_CACHE_TABLE: !Ref DynamoDB
     AWS_BUCKET: !Ref S3Bucket
+    SQS: !Ref SQSQueue
     ASSET_URL: !Join ['', ['https://', !GetAtt [S3PublicAssetsBucket, DomainName]]]
 
 custom:
