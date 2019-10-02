@@ -87,6 +87,13 @@ functions:
         path: '/'
         method: get
 
+  queueListener:
+    handler: framework/queue/sqsTriggerHandler.handler
+    timeout: 120
+    events:
+    - sqs:
+        arn: !GetAtt SQSQueue.Arn
+
   smokeTestCommand:
     handler: application/command/smokeTestCommand.handler
     timeout: 120
