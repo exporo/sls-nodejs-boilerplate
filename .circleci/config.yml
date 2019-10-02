@@ -29,17 +29,50 @@ jobs:
   test:
     working_directory: ~/sls
     docker:
-    - image: circleci/node:10.0.0
+    - image: circleci/node:10.15.0
+
     - image: mysql:5.6
+      name: mysql
+      environment:
+        - MYSQL_DATABASE=forge
+        - MYSQL_USER=homestead
+        - MYSQL_PASSWORD=secret
+        - MYSQL_ROOT_PASSWORD=root
+
     - image: amazon/dynamodb-local
+      name: dynamodb
+
     - image: vsouza/sqs-local
+      name: sqs
+
     steps:
     - attach_workspace:
         at: ~/sls
     - run:
+        name: install dockerize
+        command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+        environment:
+          DOCKERIZE_VERSION: v0.3.0
+    - run:
+        name: Wait for db
+        command: dockerize -wait tcp://mysql:3306 -timeout 1m
+    - run:
         Name: Set Global Env Vars
         command: |
           cat envVars >> $BASH_ENV
+    - run:
+        name: Install AWS CLI
+        command: |
+          sudo apt-get update
+          sudo apt-get install python-pip
+          sudo pip install awscli
+          aws --version
+    - run:
+        name: run localPrerquisites
+        command: cd localPrerequisites && ./init.sh
+    - run:
+        name: run DB migrations
+        command: npm run migrate:latest
     - run:
         name: run tests
         command: npm run tests
@@ -64,35 +97,16 @@ jobs:
         command: |
           sudo apt-get install awscli
     - run:
-        name: Serverless domain manager create domain
-        command: |
-          serverless create_domain --stage $STAGE
-    - run:
         name: Serverless deployment
         command: |
           serverless deploy --stage $STAGE
+    - run:
+        name: Run Migrate Command
+        command: sls invoke -f migrateCommand --stage $STAGE
+    - run:
+        name: Run Smoke Tests Command
+        command: sls invoke -f smokeTestCommand --stage $STAGE
 
-  smokeTest:
-    working_directory: ~/sls
-    docker:
-    - image: circleci/php:7.3-apache-node-browsers-legacy
-    steps:
-    - attach_workspace:
-        at: ~/sls
-    - run:
-        name: Install Serverless
-        command: |
-          sudo npm install -g serverless
-    - run:
-        Name: Set Global Env Vars
-        command: |
-          cat envVars >> $BASH_ENV
-    - run:
-        name: Run Smoke Tests
-        command: |
-          SLS_URL="$(serverless info --verbose  --stage $STAGE | grep ServiceEndpoint | sed s/ServiceEndpoint\:\ //g)"
-          echo "run smoke test with ${SLS_URL}/smoke-test"
-          wget --content-on-error -qO- ${SLS_URL}/smoke-test
 
   deployProd:
     working_directory: ~/sls
@@ -139,14 +153,10 @@ workflows:
         requires:
         - test
 
-    - smokeTest:
-        requires:
-        - deploy
-
     - hold:
         type: approval
         requires:
-        - smokeTest
+        - deploy
         filters:
           branches:
             only: master

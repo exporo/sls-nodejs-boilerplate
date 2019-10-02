@@ -1,23 +1,20 @@
-import {expect} from 'chai';
 import 'mocha';
-import {Storage, storage_path} from '../../framework/storage/storage';
+import {Storage} from '../../framework/storage/storage';
+import {expect} from "chai";
 
 
 describe('Storage tests', () => {
     it('storage write', () => {
-        return Storage.writeFile(storage_path('message.txt'), 'Hello Node')
-            .then(() => {
-                console.log('written');
-            })
+        return Storage.put('message.txt', 'Hello Node')
             .catch((error) => {
                 console.log(error);
             });
     });
 
     it('storage read', () => {
-        return Storage.readFile(storage_path('message.txt'))
-            .then((data) => {
-                console.log('read', data.toString());
+        return Storage.get('message.txt')
+            .then((value) => {
+                expect(value.toString()).to.eql('Hello Node');
             })
             .catch((error) => {
                 console.log(error);

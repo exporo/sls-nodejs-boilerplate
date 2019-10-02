@@ -1,26 +1,9 @@
-import S3FS from 'S3FS';
-import * as fs from 'fs';
+import * as StorageManager from '@slynova/flydrive';
 
 const config = require('../../application/config/storage.ts');
-let storageProvider;
 
-switch (config.provider) {
-    case 'local': {
-        storageProvider = fs.promises;
-        break;
-    }
-    case 's3': {
-        storageProvider = new S3FS('test-bucket', config.s3);
-        break;
-    }
-}
+const storage = new StorageManager(config);
 
-export const Storage = storageProvider;
+export const Storage = storage.disk();
 
-export const storage_path = function (fileName) {
-    if (config.provider === 'local') {
-        return config.local.prefix + fileName;
-    }
 
-    return fileName;
-};

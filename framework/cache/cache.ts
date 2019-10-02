@@ -1,22 +1,18 @@
 const config = require('../../application/config/cache.ts');
 var AWS = require('aws-sdk');
 
-if (config.driver === 'local') {
-    AWS.config.update({
-        accessKeyId: 'foo',
-        secretAccessKey: 'foo',
-        region: "eu-central-1",
-        endpoint: "http://dynamodb:8000"
-    });
+const currentConf = config[config.default];
 
-    localDynamoDBPrerequisites();
-}
+AWS.config.update({
+    region: currentConf.region,
+    endpoint: currentConf.endpoint
+});
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 export class Cache {
 
-    private static tableNmae = 'cache';
+    private static tableName = currentConf.tableName;
     private static keyPrefix = 'cache-';
 
     public static remember(name, ttlInSeconds, callback) {
@@ -40,13 +36,14 @@ export class Cache {
 
     public static get(name) {
         const params = {
-            TableName: this.tableNmae,
+            TableName: this.tableName,
             Key: {'key': this.generateKey(name)}
         };
 
         return docClient.get(params).promise()
             .then((data) => {
-                if (data.Item && data.Item.value) {
+                if (data.Item && data.Item.value &&
+                    data.Item.ttl > this.getUnixTime(0)) {
                     return data.Item.value;
                 }
             });
@@ -54,11 +51,11 @@ export class Cache {
 
     public static put(name, ttlInSeconds, value) {
         const params = {
-            TableName: this.tableNmae,
+            TableName: this.tableName,
             Item: {
                 'key': this.generateKey(name),
                 'value': value,
-                'ttl': Math.floor(Date.now() / 1000) + ttlInSeconds
+                'ttl': this.getUnixTime(ttlInSeconds)
             }
         };
 
@@ -68,63 +65,18 @@ export class Cache {
 
     public static remove(name) {
         const params = {
-            TableName: this.tableNmae,
+            TableName: this.tableName,
             Key: {'key': this.generateKey(name)}
         };
 
         return docClient.delete(params).promise();
     }
 
+    protected static getUnixTime(seconds: number) {
+        return Math.floor(Date.now() / 1000) + seconds;
+    }
 
     private static generateKey(name: string) {
         return this.keyPrefix + name;
     }
-}
-
-async function localDynamoDBPrerequisites() {
-    const ddb = new AWS.DynamoDB();
-
-    const params = {
-        AttributeDefinitions: [
-            {
-                AttributeName: 'key',
-                AttributeType: 'S'
-            }
-        ],
-        KeySchema: [
-            {
-                AttributeName: 'key',
-                KeyType: 'HASH'
-            },
-        ],
-        ProvisionedThroughput: {
-            ReadCapacityUnits: 1,
-            WriteCapacityUnits: 1
-        },
-        TableName: 'cache',
-        StreamSpecification: {
-            StreamEnabled: false
-        }
-    };
-
-    await ddb.listTables().promise()
-        .then((data) => {
-            if (data.TableNames.includes('cache')) {
-                return;
-            }
-
-            return ddb.createTable(params).promise().then(() => {
-                const params = {
-                    TableName: 'cache',
-                    TimeToLiveSpecification: {
-                        AttributeName: 'ttl',
-                        Enabled: true
-                    }
-                };
-
-                return ddb.describeTimeToLive(params).promise();
-            }).then(() => {
-                return new Promise((resolve) => setTimeout(resolve, 1000));
-            });
-        });
 }

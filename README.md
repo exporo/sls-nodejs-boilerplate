@@ -12,7 +12,7 @@ docker$serverless invoke local -f {functionName}
 
 Since typescript is quite slow in connection with serverless, it is very advisable in local development to work primarily against tests.
 ```
-docker$mocha -r ts-node/register tests/**/*.spec.ts --exit --fgrep '{MyTestName}'
+docker$mocha -r ts-node/register tests/**/*.spec.ts --fgrep 'MyTestName'
 ```
 
 ## Database
@@ -38,17 +38,16 @@ In the background knex is used.
 
 
 ## Storage
-In the local development environment, the classic [node.js FS](https://nodejs.org/api/fs.html#fs_fs_promises_api) library is used using promises.
-In an AWS environment an [S3 library](https://www.npmjs.com/package/s3fs) is used so that the syntax does not change.
-In S3 the bucket created in the Cloudformation script is used.
+In the local development environment, the local ./storage folder is used and in an AWS environment the S3 the bucket, created in the Cloudformation script, is used.
+[Flydrive](https://github.com/Slynova-Org/flydrive) is used as filesystem abstraction manager.
 
 
 ```
-import {Storage, storage_path} from '../../framework/storage/storage';
+import {Storage} from '../../framework/storage/storage';
 
-Storage.writeFile(storage_path('message.txt'), 'Hello Node');
+Storage.put('message.txt', 'Hello Node');
 
-Storage.readFile(storage_path('message.txt')).then((content)=> {console.log(content.toString())});
+Storage.get('message.txt').then((content)=> {console.log(content.toString())});
 ```
 
 ## Cache

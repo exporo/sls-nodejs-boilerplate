@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import 'mocha';
 import {User, UserInterface} from "../../application/models/user";
 
-describe('Basic Model tests', () => {
+describe('Model tests', () => {
     it('should create a new model', () => {
         return User.q().insert(<UserInterface>{name: 'h.lippke@exporo.com'})
             .catch((error) => {

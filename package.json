@@ -5,30 +5,31 @@
   "main": "webpack.mix.js",
   "scripts": {
     "tests": "mocha -r ts-node/register tests/**/*.spec.ts --exit",
-    "migrate:latest": "knex --knexfile application/config/db.ts migrate:latest",
-    "migrate:rollback": "knex --knexfile application/config/db.ts migrate:rollback",
-    "migrate:make": "knex --knexfile application/config/db.ts -x ts migrate:make"
+    "migrate:latest": "node node_modules/knex/bin/cli.js --knexfile application/config/db.ts migrate:latest",
+    "migrate:rollback": "node node_modules/knex/bin/cli.js --knexfile application/config/db.ts migrate:rollback",
+    "migrate:make": "node node_modules/knex/bin/cli.js --knexfile application/config/db.ts -x ts migrate:make"
   },
   "repository": {},
   "author": "",
   "homepage": "",
   "dependencies": {
-    "@types/node": "^12.7.5",
-    "esserializer": "^1.0.0",
-    "knex": "^0.19.4",
-    "mysql": "^2.17.1",
-    "s3fs": "^2.5.0",
-    "serverless-pseudo-parameters": "^2.4.0"
-  },
-  "devDependencies": {
+    "@slynova/flydrive": "^0.3.1",
     "@types/chai": "^4.2.2",
     "@types/knex": "^0.14.26",
     "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.5",
     "chai": "^4.2.0",
-    "mocha": "^6.2.0",
-    "serverless-domain-manager": "2.6.13",
-    "serverless-plugin-typescript": "^1.1.9",
-    "ts-node": "^8.3.0",
+    "knex": "^0.19.4",
+    "mocha": "^6.2.1",
+    "mocha-simple-html-reporter": "^1.1.0",
+    "mysql": "^2.17.1",
+    "serverless-pseudo-parameters": "^2.4.0",
+    "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
+  },
+  "devDependencies": {
+    "serverless-domain-manager": "2.6.13",
+    "serverless-offline": "^5.11.0",
+    "serverless-plugin-typescript": "^1.1.9"
   }
 }
