@@ -18,7 +18,7 @@ Resources:
       QueueName: ${self:custom.UUID}
       RedrivePolicy:
         DeadLetterTargetArn:
-          !Ref SQSDLQueue
+          !GetAtt SQSDLQueue.Arn
         MaxReceiveCount: 5
 
   SQSDLQueue:
