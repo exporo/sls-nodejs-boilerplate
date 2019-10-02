@@ -17,7 +17,8 @@ Resources:
       VisibilityTimeout: 120
       QueueName: ${self:custom.UUID}
       RedrivePolicy:
-        DeadLetterTargetArn: Ref: SQSDLQueue
+        DeadLetterTargetArn:
+          !Ref SQSDLQueue
         MaxReceiveCount: 5
 
   SQSDLQueue:
