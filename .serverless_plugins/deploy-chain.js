@@ -30,7 +30,6 @@ class DeployChain {
             'ssh:show': () => Promise.resolve().then(this.ssh.bind(this)),
             'protectTermination:enable': () => Promise.resolve().then(this.setTerminationProtection.bind(this)),
             'before:deploy:deploy': () => Promise.resolve().then(this.upsertKeyPair.bind(this)),
-            'after:deploy:deploy': () => Promise.resolve().then(this.deployChain.bind(this)),
             'remove:remove': () => Promise.resolve().then(this.remove.bind(this)),
         };
     }
@@ -73,11 +72,6 @@ class DeployChain {
         this.serverless.cli.log('MySql Username: forge');
         this.serverless.cli.log('MySql Password: ' + MySqlPassword);
         this.serverless.cli.log('MySql Database: forge');
-    }
-
-    deployChain() {
-        this.exec("serverless invoke -f artisan --data '{\"cli\":\"migrate --force\"}' --stage " + this.getConfig().stage + this.setProfileArgument('--aws-profile') + this.setRegionArgument());
-        this.exec("aws s3 sync ./application/public s3://" + this.getConfig().uuid + "-assets --delete --acl public-read " + this.setProfileArgument() + this.setRegionArgument());
     }
 
     remove() {

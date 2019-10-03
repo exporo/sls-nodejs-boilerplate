@@ -60,3 +60,14 @@ const ttlInSeconds = 60;
 
 Cachce.remember('cache-key', ttlInSeconds, () => { return 'cache-valuee'});
 ```
+
+## Queue
+The docker container vsouza/sqs-local is used locally. In an AWS environment the generated SQS queue together with a dead letter queue is used.
+
+```
+import {Queue} from "../../framework/queue/queue";
+import {myJOb} from "../../application/jobs/myJob";
+
+return Queue.dispatch((new myJOb({email: 'test'})));
+```
+TODO create a failed_jobs table and use it as dead letter queue

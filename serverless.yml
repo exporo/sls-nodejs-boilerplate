@@ -46,6 +46,7 @@ provider:
     DB_PASSWORD: !Sub '{{resolve:secretsmanager:${self:custom.UUID}-DB_PASSWORD}}'
     DYNAMODB_CACHE_TABLE: !Ref DynamoDB
     AWS_BUCKET: !Ref S3Bucket
+    SQS: !Ref SQSQueue
     ASSET_URL: !Join ['', ['https://', !GetAtt [S3PublicAssetsBucket, DomainName]]]
 
 custom:
@@ -87,6 +88,13 @@ functions:
         path: '/'
         method: get
 
+  queueListener:
+    handler: framework/queue/sqsTriggerHandler.handler
+    timeout: 120
+    events:
+    - sqs:
+        arn: !GetAtt SQSQueue.Arn
+
   smokeTestCommand:
     handler: application/command/smokeTestCommand.handler
     timeout: 120
@@ -108,7 +116,7 @@ plugins:
 - serverless-plugin-typescript
 - serverless-pseudo-parameters
 - serverless-offline
-#- deploy-chain
+- deploy-chain
 
 #AWS Resources
 resources:
