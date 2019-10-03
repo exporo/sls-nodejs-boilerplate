@@ -17,9 +17,9 @@ Resources:
       VisibilityTimeout: 120
       QueueName: ${self:custom.UUID}
       RedrivePolicy:
-        DeadLetterTargetArn:
+        deadLetterTargetArn:
           !GetAtt SQSDLQueue.Arn
-        MaxReceiveCount: 5
+        maxReceiveCount: 5
 
   SQSDLQueue:
     Type: AWS::SQS::Queue
