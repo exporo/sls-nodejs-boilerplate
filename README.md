@@ -70,3 +70,4 @@ import {myJOb} from "../../application/jobs/myJob";
 
 return Queue.dispatch((new myJOb({email: 'test'})));
 ```
+TODO create a failed_jobs table and use it as dead letter queue
