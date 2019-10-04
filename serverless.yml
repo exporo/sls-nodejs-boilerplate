@@ -74,13 +74,13 @@ custom:
     host: 0.0.0.0
 
 functions:
-  homeControllerIndex:
-    handler: application/http/controllers/homeController.index
+  userRestEndpoint:
+    handler: application/domain/users/controllers/user.controller.restHandler
     timeout: 30
     events:
     - http:
-        path: '/'
-        method: get
+        path: /users/{proxy+}
+        method: ANY
 
   queueListener:
     handler: framework/queue/sqsTriggerHandler.handler
