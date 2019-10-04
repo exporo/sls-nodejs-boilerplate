@@ -1,11 +1,10 @@
 import {User} from "../../models/user";
 
-const config = require( '../../config/db');
-
 
 exports.index = async (event, context, callback) => {
 
     console.log(User.q().first());
+
 
     callback(null,
         {
@@ -16,3 +15,6 @@ exports.index = async (event, context, callback) => {
             body: 'db4'
         });
 };
+
+
+

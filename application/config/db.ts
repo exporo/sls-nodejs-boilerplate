@@ -29,5 +29,5 @@ const config = {
 
 config.connection = config.connections[config.connectionType];
 
-module.exports = config;
+export default config;
 

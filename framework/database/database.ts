@@ -1,6 +1,6 @@
 import * as Knex from 'knex'
 
-const config = require( '../../application/config/db.js');
+import config from '../../application/config/db';
 
 export const database = Knex(config as Knex.Config);
 
