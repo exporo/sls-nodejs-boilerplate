@@ -1,4 +1,4 @@
-const config = require('../../application/config/cache.ts');
+import config from '../../application/config/cache';
 var AWS = require('aws-sdk');
 
 const currentConf = config[config.default];

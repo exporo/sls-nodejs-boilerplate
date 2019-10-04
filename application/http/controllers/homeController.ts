@@ -1,15 +1,18 @@
 import {User} from "../../models/user";
 
+const config = require( '../../config/db');
 
-exports.index = async (event) => {
 
-    //console.log(User.find(1));
+exports.index = async (event, context, callback) => {
 
-    return {
-        statusCode: 200,
-        headers: {
-            "Content-Type": "text/html"
-        },
-        body: 'hello world'
-    };
+    console.log(User.q().first());
+
+    callback(null,
+        {
+            statusCode: 200,
+            headers: {
+                "Content-Type": "text/html"
+            },
+            body: 'db4'
+        });
 };

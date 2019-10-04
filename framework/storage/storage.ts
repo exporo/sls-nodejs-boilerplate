@@ -1,6 +1,6 @@
 import * as StorageManager from '@slynova/flydrive';
 
-const config = require('../../application/config/storage.ts');
+import config from '../../application/config/storage';
 
 const storage = new StorageManager(config);
 
