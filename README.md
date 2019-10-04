@@ -113,28 +113,8 @@ app.delete(`/${route}/:id`, this.remove);
 Validation can be done like this:
 application/domain/users/controllers/user.controller.ts:
 ```
-onStoreValidation = data => {
-        const { error } = userSchema.validate({
-            name: data.name
-        });
-
-        if (error) {
-            throw Error(`422::${error.details[0].message}`);
-        } else {
-            return data;
-        }
-    }
-
-onUpdateValidation = (id, data) => {
-    const { error } = editUserSchema.validate({
-        name: data.first_name,
-    });
-
-    if (error) {
-        throw Error(`422::${error.details[0].message}`);
-    } else {
-        return data;
-    }
+onStoreValidationSchema = userSchema;
+onUpdateValidationSchema = editUserSchema;
 }
 ```
 

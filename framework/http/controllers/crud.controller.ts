@@ -1,4 +1,5 @@
 import { idSchema } from "../../schemas/crud.schema";
+import {userSchema} from "../../../application/domain/users/schemas/user.schema";
 
 const express = require("express");
 const serverless = require("serverless-http");
@@ -10,6 +11,8 @@ app.use(bodyParser.json());
 export class CrudController {
     route: string;
     essence: any;
+    onStoreValidationSchema: object;
+    onUpdateValidationSchema: object;
 
     constructor(route: string, essence: any) {
         this.essence = essence;
@@ -59,7 +62,8 @@ export class CrudController {
 
     public store = async (req, res) => {
         try {
-            this.onStoreValidation(req.body);
+            this.validate(req.body, this.onStoreValidationSchema);
+
             const response = await this.add(req.body);
 
             res.send(response.body);
@@ -71,13 +75,12 @@ export class CrudController {
         }
     }
 
-    onStoreValidation = (reqBody) => { }
-
     private update = async (req, res) => {
         try {
             const id = req.params.id;
 
-            this.onUpdateValidation(req.params, req.body);
+            this.validate(req.body, this.onUpdateValidationSchema);
+
             const response = await this.edit(id, req.body);
 
             res.status(202).send(response.body);
@@ -89,7 +92,19 @@ export class CrudController {
         }
     }
 
-    onUpdateValidation = (reqParams, reqBody) => { }
+    private validate = (data, schema) => {
+        if(!schema){
+            return;
+        }
+
+        const { error } = schema.validate(data);
+
+        if (error) {
+            throw Error(`422::${error.details[0].message}`);
+        } else {
+            return data;
+        }
+    }
 
     private remove = async (req, res) => {
         const id = req.params.id;

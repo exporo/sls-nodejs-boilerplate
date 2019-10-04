@@ -7,29 +7,8 @@ export class UserController extends CrudController {
         super("users", User);
     }
 
-    onStoreValidation = data => {
-        const { error } = userSchema.validate({
-            name: data.name
-        });
-
-        if (error) {
-            throw Error(`422::${error.details[0].message}`);
-        } else {
-            return data;
-        }
-    }
-
-    onUpdateValidation = (id, data) => {
-        const { error } = editUserSchema.validate({
-            name: data.first_name,
-        });
-
-        if (error) {
-            throw Error(`422::${error.details[0].message}`);
-        } else {
-            return data;
-        }
-    }
+    onStoreValidationSchema = userSchema;
+    onUpdateValidationSchema = editUserSchema;
 }
 
 exports.restHandler = new UserController().setupRestHandler();

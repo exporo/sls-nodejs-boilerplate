@@ -1,5 +1,6 @@
 import {UserController} from "../../application/domain/users/controllers/user.controller";
 import "mocha";
+import {User} from "../../application/domain/users/models/user.model";
 
 const request = require("supertest");
 const chai = require("chai");
@@ -8,6 +9,9 @@ const userCtr = new UserController();
 const app = userCtr.setupAPIHandler();
 
 const user = {
+    initData: {
+        name: 'Henrik'
+    },
     correctData: {
         id: 1,
         name: 'Henrik'
@@ -16,24 +20,33 @@ const user = {
         last_name: 'Henrik'
     },
     updateCorrectData: {
-        id: 1,
-        name: 'Henrik Lippke'
+        name: 'HenrikLippke'
     },
     updateIncorrectData: {
-        first_name: 'Henrik Mustermann'
+        first_name: 'HenrikMustermann'
     }
 };
 
 describe("user controller tests", () => {
+
+
     describe("CRUD operation with correct data", () => {
+        it("Truncate DB", done => {
+            User.q()
+                .truncate()
+                .then(() => {
+                    done();
+                });
+        });
+
         it("#POST sould add a user, return 200 code", done => {
             request(app)
                 .post("/users")
-                .send(user.correctData)
+                .send(user.initData)
                 .expect(200)
                 .end((err, res) => {
                     const data = JSON.parse(res.text);
-                    data.should.eql(user.correctData);
+                    data.should.eql(user.initData);
                     done();
                 });
         });
@@ -50,8 +63,8 @@ describe("user controller tests", () => {
                 .get(`/users/${user.correctData.id}`)
                 .expect(200)
                 .end((err, res) => {
-                    const data = JSON.parse(res.text);
-                    data.name.should.eql(user.updateCorrectData.name);
+                    const response = JSON.parse(res.text);
+                    response.name.should.eql(user.updateCorrectData.name);
                     done();
                 });
         });
@@ -84,7 +97,7 @@ describe("user controller tests", () => {
         before(done => {
             request(app)
                 .post("/users")
-                .send(user.correctData)
+                .send(user.initData)
                 .expect(200, done);
         });
 
