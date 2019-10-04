@@ -56,15 +56,6 @@ custom:
   REGION: ${opt:region, self:provider.region}
   STAGE: ${opt:stage, self:provider.stage}
 
-  customDomain:
-    domainName: ${self:custom.customDomain.switch.${opt:stage, self:provider.stage}.domainName , '${self:custom.customDomain.switch.default.domainName}'}
-    switch:
-      baseDomain: techdev2.exporo.de
-      default:
-        domainName: ${opt:stage, self:provider.stage}.${self:custom.customDomain.switch.baseDomain}
-      production:
-        domainName: ${self:custom.customDomain.switch.baseDomain}
-
   AURORA:
     MIN_CAPACITY: 4
     MAX_CAPACITY: 32
@@ -78,6 +69,9 @@ custom:
       default:
         AUTO_PAUSE: 'true'
         DELETE_PROTECTION: 'false'
+
+  serverless-offline:
+    host: 0.0.0.0
 
 functions:
   homeControllerIndex:

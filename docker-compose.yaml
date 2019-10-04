@@ -12,6 +12,8 @@ services:
     depends_on:
     - mysql
     - dynamodb
+    ports:
+    - 3000:3000
 
   mysql:
     image: mysql:5.6

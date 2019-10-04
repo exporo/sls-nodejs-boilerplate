@@ -22,6 +22,7 @@ RUN npm install -g ts-node
 
 RUN npm install -g mocha-simple-html-reporter
 
+EXPOSE 3000
 
 
 
