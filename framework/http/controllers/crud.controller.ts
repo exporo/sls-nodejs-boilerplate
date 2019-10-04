@@ -100,7 +100,7 @@ export class CrudController {
         const { error } = schema.validate(data);
 
         if (error) {
-            throw Error(`422::${error.details[0].message}`);
+            throw Error(`422::${error}`);
         } else {
             return data;
         }
