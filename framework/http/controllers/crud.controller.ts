@@ -1,4 +1,4 @@
-import { idSchema } from "../../schemas/crud.schema";
+import {idSchema} from "../../schemas/crud.schema";
 import {userSchema} from "../../../application/domain/users/schemas/user.schema";
 
 const express = require("express");
@@ -26,11 +26,11 @@ export class CrudController {
     }
 
     public setupAPIHandler() {
-        const { route } = this;
+        const {route} = this;
 
-        app.get(`/${route}/`, this.index);
+        app.get(`/${route}`, this.index);
         app.get(`/${route}/:id`, this.show);
-        app.post(`/${route}/`, this.store);
+        app.post(`/${route}`, this.store);
         app.put(`/${route}/:id`, this.update);
         app.delete(`/${route}/:id`, this.remove);
 
@@ -50,7 +50,7 @@ export class CrudController {
 
     private show = async (req, res) => {
         const id = req.params.id;
-        const { error } = idSchema.validate({ id: id });
+        const {error} = idSchema.validate({id: id});
 
         if (error) {
             res.status(400).send(`${error}`);
@@ -69,10 +69,7 @@ export class CrudController {
 
             res.send(response.body);
         } catch (error) {
-            const statusCode = error.message.split("::")[0];
-            const message = error.message.split("::")[1];
-
-            res.status(statusCode).send(message);
+            res.status(422).send(error);
         }
     };
 
@@ -86,19 +83,16 @@ export class CrudController {
 
             res.status(202).send(response.body);
         } catch (error) {
-            const statusCode = error.message.split("::")[0];
-            const message = error.message.split("::")[1];
-
-            res.status(statusCode).send(message);
+            res.status(422).send(error);
         }
     };
 
     private validate = (data, schema) => {
-        if(!schema){
+        if (!schema) {
             return;
         }
 
-        const { error } = schema.validate(data);
+        const {error} = schema.validate(data);
 
         if (error) {
             throw Error(`422::${error}`);
@@ -109,10 +103,10 @@ export class CrudController {
 
     private remove = async (req, res) => {
         const id = req.params.id;
-        const { error } = idSchema.validate({ id: id });
+        const {error} = idSchema.validate({id: id});
 
         if (error) {
-            res.status(400).send(`${error.details[0].message}`);
+            res.status(400).send(`${error}`);
         } else {
             const response = await this.delete(id);
 
