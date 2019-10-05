@@ -100,7 +100,7 @@ export class CrudController {
         if (error) {
             throw {
                 status: 422,
-                error: error
+                error: error.details
             };
         } else {
             return data;
