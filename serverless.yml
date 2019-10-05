@@ -4,6 +4,8 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: eu-central-1
+  logs:
+    restApi: true
   vpc:
     securityGroupIds:
     - Fn::GetAtt: ServerlessVPC.DefaultSecurityGroup
