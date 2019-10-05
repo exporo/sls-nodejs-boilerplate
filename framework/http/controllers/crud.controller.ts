@@ -70,7 +70,7 @@ export class CrudController {
             res.send(response.body);
         } catch (error) {
             console.log(error);
-            res.status(422).send(error.message);
+            res.status(422).json(error.message);
         }
     };
 
@@ -84,7 +84,7 @@ export class CrudController {
 
             res.status(202).send(response.body);
         } catch (error) {
-            res.status(422).send(error.message);
+            res.status(422).json(error.message);
         }
     };
 
