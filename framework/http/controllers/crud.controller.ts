@@ -38,80 +38,71 @@ export class CrudController {
     }
 
     private index = async (req, res) => {
-        console.log('hello world');
         try {
             const response = await this.getAll();
-
             res.status(response.statusCode).send(response.body);
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).json(error);
         }
     };
 
     private show = async (req, res) => {
-        const id = req.params.id;
-        const {error} = idSchema.validate({id: id});
-
-        if (error) {
-            res.status(400).send(`${error}`);
-        } else {
+        try {
+            const id = req.params.id;
+            this.validate({id: id}, idSchema);
             const response = await this.get(id);
-
             res.send(response.body);
+        } catch (error) {
+            res.status(400).json(error);
+
         }
     };
 
     public store = async (req, res) => {
         try {
             this.validate(req.body, this.onStoreValidationSchema);
-
             const response = await this.add(req.body);
-
             res.send(response.body);
         } catch (error) {
             console.log(error);
-            res.status(422).json(error.message);
+            res.status(422).json(error);
         }
     };
 
     private update = async (req, res) => {
         try {
             const id = req.params.id;
-
             this.validate(req.body, this.onUpdateValidationSchema);
-
             const response = await this.edit(id, req.body);
-
             res.status(202).send(response.body);
         } catch (error) {
-            res.status(422).json(error.message);
+            res.status(422).json(error);
+        }
+    };
+
+    private remove = async (req, res) => {
+        try {
+            const id = req.params.id;
+            this.validate({id: id}, idSchema);
+            const response = await this.delete(id);
+            res.status(204).send(response.body);
+        } catch (error) {
+            res.status(400).json(error);
+
         }
     };
 
     private validate = (data, schema) => {
         if (!schema) {
-            return;
+            return data;
         }
 
         const {error} = schema.validate(data);
 
         if (error) {
-            throw Error(`422::${error}`);
+            throw Error(error);
         } else {
             return data;
-        }
-    };
-
-    private remove = async (req, res) => {
-        const id = req.params.id;
-        const {error} = idSchema.validate({id: id});
-
-        if (error) {
-            res.status(400).send(`${error}`);
-        } else {
-            const response = await this.delete(id);
-
-            res.status(204).send(response.body);
         }
     };
 
