@@ -21,7 +21,7 @@ export class CrudController {
 
     public setupRestHandler() {
         this.setupAPIHandler();
-console.log(app);
+
         return serverless(app);
     }
 
@@ -38,6 +38,7 @@ console.log(app);
     }
 
     private index = async (req, res) => {
+        console.log('hello world');
         try {
             const response = await this.getAll();
 
@@ -52,7 +53,7 @@ console.log(app);
         const { error } = idSchema.validate({ id: id });
 
         if (error) {
-            res.status(400).send(`${error.details[0].message}`);
+            res.status(400).send(`${error}`);
         } else {
             const response = await this.get(id);
 
