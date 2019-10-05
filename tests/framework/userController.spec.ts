@@ -1,4 +1,4 @@
-import {UserController} from "../../application/domain/users/controllers/userController";
+import {UserController} from "../../application/domain/users/controllers/user.controller";
 import "mocha";
 import {User} from "../../application/domain/users/models/user.model";
 
