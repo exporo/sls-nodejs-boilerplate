@@ -9,6 +9,10 @@ $docker-compose up -d
 $docker-compose exec node bash
 docker$serverless invoke local -f {functionName}
 ```
+Or use serverless offline and open http://0.0.0.0:3000 in your browser:
+```
+docker$serverless offline 
+```
 
 Since typescript is quite slow in connection with serverless, it is very advisable in local development to work primarily against tests.
 ```
@@ -16,7 +20,7 @@ docker$mocha -r ts-node/register tests/**/*.spec.ts --fgrep 'MyTestName'
 ```
 
 ## Database
-application/models/user.ts
+application/domain/users/models/user.model.ts
 
 ```
 User.q().where('column', '=', 'foo').first().then((column) => {}); 
@@ -71,3 +75,49 @@ import {myJOb} from "../../application/jobs/myJob";
 return Queue.dispatch((new myJOb({email: 'test'})));
 ```
 TODO create a failed_jobs table and use it as dead letter queue
+
+
+## CRUD Controller
+The crud controller automatically performs crud operations on the provided model.
+
+serverless.yml:
+```
+functions:
+  userRestEndpoint:
+    handler: application/domain/users/controllers/userController.restHandler
+    events:
+    - http:
+        path: /users/{proxy+}
+        method: ANY
+    - http:
+        path: /users
+        method: ANY
+```
+
+application/domain/users/controllers/userController.ts:
+```
+export class UserController extends CrudController {
+    constructor() {
+        super("users", User);
+    }
+```
+
+By default the following routes will be created:
+framework/http/controllers/crudController.ts@setupAPIHandler:
+```
+app.get(`/${route}/`, this.index);
+app.get(`/${route}/:id`, this.show);
+app.post(`/${route}/`, this.store);
+app.put(`/${route}/:id`, this.update);
+app.delete(`/${route}/:id`, this.remove);
+```
+
+
+Validation can be done like this:
+application/domain/users/controllers/userController.ts:
+```
+onStoreValidationSchema = userSchema;
+onUpdateValidationSchema = editUserSchema;
+}
+```
+
