@@ -84,14 +84,17 @@ serverless.yml:
 ```
 functions:
   userRestEndpoint:
-    handler: application/domain/users/controllers/user.controller.restHandler
+    handler: application/domain/users/controllers/userController.restHandler
     events:
     - http:
         path: /users/{proxy+}
         method: ANY
+    - http:
+        path: /users
+        method: ANY
 ```
 
-application/domain/users/controllers/user.controller.ts:
+application/domain/users/controllers/userController.ts:
 ```
 export class UserController extends CrudController {
     constructor() {
@@ -100,7 +103,7 @@ export class UserController extends CrudController {
 ```
 
 By default the following routes will be created:
-framework/http/controllers/crud.controller.ts@setupAPIHandler:
+framework/http/controllers/crudController.ts@setupAPIHandler:
 ```
 app.get(`/${route}/`, this.index);
 app.get(`/${route}/:id`, this.show);
@@ -111,7 +114,7 @@ app.delete(`/${route}/:id`, this.remove);
 
 
 Validation can be done like this:
-application/domain/users/controllers/user.controller.ts:
+application/domain/users/controllers/userController.ts:
 ```
 onStoreValidationSchema = userSchema;
 onUpdateValidationSchema = editUserSchema;
