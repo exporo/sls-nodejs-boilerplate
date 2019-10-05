@@ -43,9 +43,10 @@ describe("user controller tests", () => {
             request(app)
                 .post("/users")
                 .send(user.initData)
-                .expect(200)
+                .expect(201)
                 .end((err, res) => {
                     const data = JSON.parse(res.text);
+                    console.log('data',data);
                     data.should.eql(user.initData);
                     done();
                 });
@@ -98,7 +99,7 @@ describe("user controller tests", () => {
             request(app)
                 .post("/users")
                 .send(user.initData)
-                .expect(200, done);
+                .expect(201, done);
         });
 
         after(done => {

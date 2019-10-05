@@ -40,9 +40,9 @@ export class CrudController {
     private index = async (req, res) => {
         try {
             const response = await this.getAll();
-            res.status(response.statusCode).send(response.body);
+            res.json(response);
         } catch (error) {
-            res.status(400).json(error);
+            res.status(error.status).json(error.error);
         }
     };
 
@@ -51,9 +51,9 @@ export class CrudController {
             const id = req.params.id;
             this.validate({id: id}, idSchema);
             const response = await this.get(id);
-            res.send(response.body);
+            res.json(response);
         } catch (error) {
-            res.status(400).json(error);
+            res.status(error.status).json(error.error);
 
         }
     };
@@ -62,10 +62,9 @@ export class CrudController {
         try {
             this.validate(req.body, this.onStoreValidationSchema);
             const response = await this.add(req.body);
-            res.send(response.body);
+            res.status(201).json(response);
         } catch (error) {
-            console.log(error);
-            res.status(422).json(error);
+            res.status(error.status).json(error.error);
         }
     };
 
@@ -74,9 +73,9 @@ export class CrudController {
             const id = req.params.id;
             this.validate(req.body, this.onUpdateValidationSchema);
             const response = await this.edit(id, req.body);
-            res.status(202).send(response.body);
+            res.status(202).json(response);
         } catch (error) {
-            res.status(422).json(error);
+            res.status(error.status).json(error.error);
         }
     };
 
@@ -85,10 +84,9 @@ export class CrudController {
             const id = req.params.id;
             this.validate({id: id}, idSchema);
             const response = await this.delete(id);
-            res.status(204).send(response.body);
+            res.status(204).json(response);
         } catch (error) {
-            res.status(400).json(error);
-
+            res.status(error.status).json(error.error);
         }
     };
 
@@ -100,7 +98,10 @@ export class CrudController {
         const {error} = schema.validate(data);
 
         if (error) {
-            throw Error(error);
+            throw {
+                status: 422,
+                error: error
+            };
         } else {
             return data;
         }
@@ -109,85 +110,58 @@ export class CrudController {
     private get = async (id: number) => {
         return this.essence
             .find(id)
-            .then(result => {
-                return {
-                    statusCode: 200,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(result)
-                };
-            })
             .catch(error => {
-                console.log("!!! Error ", error);
+                throw {
+                status: 400,
+                error: error
+            };
             });
     };
 
     private getAll = async () => {
         return this.essence
             .q()
-            .then(result => {
-                return {
-                    statusCode: 200,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(result)
-                };
-            })
             .catch(error => {
-                console.log("!!! Error ", error);
+                throw {
+                status: 400,
+                error: error
+            };
             });
     };
 
     private add = async (data: object) => {
         return this.essence
             .create(data)
-            .then(result => {
-                return {
-                    statusCode: 201,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                };
+            .then(() => {
+                return data;
             })
             .catch(error => {
-                console.log("!!! Error ", error);
+                throw {
+                status: 400,
+                error: error
+            };
             });
     };
 
     private edit = async (id: number, data: object) => {
         return this.essence
             .update(id, data)
-            .then(result => {
-                return {
-                    statusCode: 202,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                };
-            })
             .catch(error => {
-                console.log("!!! Error ", error);
+                throw {
+                status: 400,
+                error: error
+            };
             });
     };
 
     private delete = async (id: number) => {
         return this.essence
             .delete(id)
-            .then(result => {
-                return {
-                    statusCode: 204,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(result)
-                };
-            })
             .catch(error => {
-                console.log("!!! Error ", error);
+                throw {
+                status: 400,
+                error: error
+            };
             });
     };
 }
