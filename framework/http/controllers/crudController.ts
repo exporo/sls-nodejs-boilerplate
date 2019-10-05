@@ -1,5 +1,4 @@
-import {idSchema} from "../../schemas/crud.schema";
-import {userSchema} from "../../../application/domain/users/schemas/user.schema";
+import {idSchema} from "../../schemas/crudSchema";
 
 const express = require("express");
 const serverless = require("serverless-http");

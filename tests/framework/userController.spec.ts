@@ -1,6 +1,6 @@
 import {UserController} from "../../application/domain/users/controllers/userController";
 import "mocha";
-import {User} from "../../application/domain/users/models/user.model";
+import {User} from "../../application/domain/users/models/userModel";
 
 const request = require("supertest");
 const chai = require("chai");
@@ -46,7 +46,7 @@ describe("user controller tests", () => {
                 .expect(201)
                 .end((err, res) => {
                     const data = JSON.parse(res.text);
-                    console.log('data',data);
+                    console.log('data', data);
                     data.should.eql(user.initData);
                     done();
                 });
@@ -112,14 +112,26 @@ describe("user controller tests", () => {
             request(app)
                 .post("/users")
                 .send(user.inCorrectData)
-                .expect(422, done);
+                .expect(422)
+                .end((err, res) => {
+                    const data = JSON.parse(res.text);
+                    data[0].message.should.eql("\"name\" is required");
+                    done();
+                });
+
+
         });
 
         it("#PUT user don`t edited, return 400 code", done => {
             request(app)
                 .put(`/users/${user.correctData.id}`)
                 .send(user.updateIncorrectData)
-                .expect(422, done);
+                .expect(422)
+                .end((err, res) => {
+                    const data = JSON.parse(res.text);
+                    data[0].message.should.eql("\"first_name\" is not allowed");
+                    done();
+                });
         });
     });
 });

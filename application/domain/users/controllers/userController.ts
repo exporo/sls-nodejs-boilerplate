@@ -1,6 +1,6 @@
-import { User } from "../models/user.model";
-import { CrudController } from "../../../../framework/http/controllers/crud.controller";
-import { userSchema, editUserSchema } from "../schemas/user.schema";
+import { User } from "../models/userModel";
+import { CrudController } from "../../../../framework/http/controllers/crudController";
+import { userSchema, editUserSchema } from "../schemas/userSchema";
 
 export class UserController extends CrudController {
     constructor() {

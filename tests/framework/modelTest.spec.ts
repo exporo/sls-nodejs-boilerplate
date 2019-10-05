@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import 'mocha';
-import {User, UserInterface} from "../../application/domain/users/models/user.model";
+import {User, UserInterface} from "../../application/domain/users/models/userModel";
 
 describe('Model tests', () => {
     it('should create a new model', () => {
