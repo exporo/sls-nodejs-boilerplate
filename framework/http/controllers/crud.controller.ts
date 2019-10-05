@@ -28,7 +28,7 @@ export class CrudController {
     public setupAPIHandler() {
         const { route } = this;
 
-        app.get(`/${route}/`, this.index);
+        app.get(`/${route}`, this.index);
         app.get(`/${route}/:id`, this.show);
         app.post(`/${route}/`, this.store);
         app.put(`/${route}/:id`, this.update);
