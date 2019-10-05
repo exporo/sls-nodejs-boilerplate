@@ -75,7 +75,7 @@ custom:
 
 functions:
   userRestEndpoint:
-    handler: application/domain/users/controllers/user.controller.restHandler
+    handler: application/domain/users/controllers/userController.restHandler
     events:
     - http:
         path: /users/{proxy+}
