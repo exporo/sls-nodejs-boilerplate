@@ -94,7 +94,7 @@ export class CrudController {
             return data;
         }
 
-        const {error} = schema.validate(data);
+        const {error} = schema.validate(data, { abortEarly: false });
 
         if (error) {
             throw {

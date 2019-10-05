@@ -46,7 +46,6 @@ describe("user controller tests", () => {
                 .expect(201)
                 .end((err, res) => {
                     const data = JSON.parse(res.text);
-                    console.log('data', data);
                     data.should.eql(user.initData);
                     done();
                 });
@@ -129,6 +128,7 @@ describe("user controller tests", () => {
                 .expect(422)
                 .end((err, res) => {
                     const data = JSON.parse(res.text);
+                    console.log('res');
                     data[0].message.should.eql("\"first_name\" is not allowed");
                     done();
                 });
