@@ -73,7 +73,7 @@ export class CrudController {
 
             res.status(statusCode).send(message);
         }
-    }
+    };
 
     private update = async (req, res) => {
         try {
@@ -90,7 +90,7 @@ export class CrudController {
 
             res.status(statusCode).send(message);
         }
-    }
+    };
 
     private validate = (data, schema) => {
         if(!schema){
@@ -104,7 +104,7 @@ export class CrudController {
         } else {
             return data;
         }
-    }
+    };
 
     private remove = async (req, res) => {
         const id = req.params.id;

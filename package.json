@@ -19,7 +19,6 @@
     "@types/mocha": "^5.2.7",
     "@hapi/joi": "^16.1.4",
     "@types/node": "^12.7.5",
-
     "chai-http": "^4.3.0",
     "express": "^4.17.1",
     "chai": "^4.2.0",
@@ -29,14 +28,13 @@
     "mysql": "^2.17.1",
     "ts-node": "^8.4.1",
     "serverless-http": "^2.3.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {
-
     "serverless-domain-manager": "2.6.13",
     "serverless-offline": "^5.11.0",
     "serverless-plugin-typescript": "^1.1.9",
-    "serverless-pseudo-parameters": "^2.4.0",
-    "supertest": "^4.0.2"
+    "serverless-pseudo-parameters": "^2.4.0"
   }
 }
