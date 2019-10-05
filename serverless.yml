@@ -82,6 +82,9 @@ functions:
     - http:
         path: /users/{proxy+}
         method: ANY
+    - http:
+        path: /users
+        method: ANY
 
   queueListener:
     handler: framework/queue/sqsTriggerHandler.handler
