@@ -1,5 +1,6 @@
 import {idSchema} from "../../schemas/crudSchema";
 import {baseController} from "./baserController";
+import {BaseRepository} from "../../repository/baseRepository";
 
 const express = require("express");
 const serverless = require("serverless-http");
@@ -10,16 +11,11 @@ app.use(bodyParser.json());
 
 export class CrudController extends baseController {
     route: string;
-    essence: any;
-
+    essence: BaseRepository;
     onStoreValidationSchema: object;
     onUpdateValidationSchema: object;
 
-    authConditionaleWhere: object = {'user_id': this.authenticatedUser['userId']};
-
-    constructor(route: string, essence: any) {
-        super();
-
+    constructor(route: string, essence: BaseRepository) {
         this.essence = essence;
         this.route = route;
     }
@@ -45,7 +41,7 @@ export class CrudController extends baseController {
     private index = async (req, res) => {
         try {
             this.checkMiddleware(req);
-            const response = await this.getAll();
+            const response = await this.essence.getAll();
             res.json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -57,7 +53,7 @@ export class CrudController extends baseController {
             this.checkMiddleware(req);
             const id = req.params.id;
             this.validate({id: id}, idSchema);
-            const response = await this.get(id);
+            const response = await this.essence.get(id);
             res.json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -69,7 +65,7 @@ export class CrudController extends baseController {
         try {
             this.checkMiddleware(req);
             this.validate(req.body, this.onStoreValidationSchema);
-            const response = await this.add(req.body);
+            const response = await this.essence.add(req.body);
             res.status(201).json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -81,7 +77,7 @@ export class CrudController extends baseController {
             this.checkMiddleware(req);
             const id = req.params.id;
             this.validate(req.body, this.onUpdateValidationSchema);
-            const response = await this.edit(id, req.body);
+            const response = await this.essence.edit(id, req.body);
             res.status(202).json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -93,72 +89,30 @@ export class CrudController extends baseController {
             this.checkMiddleware(req);
             const id = req.params.id;
             this.validate({id: id}, idSchema);
-            const response = await this.delete(id);
+            const response = await this.essence.delete(id);
             res.status(204).json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
         }
     };
 
-    //// generic model repository
+    //////////
 
-    private get = async (id: number) => {
-        return this.essence
-            .where({[this.essence.primaryId]: id})
-            .catch(error => {
-                throw {
-                    status: 400,
-                    error: error
-                };
-            });
-    };
+    private validate = (data, schema) => {
+        if (!schema) {
+            return data;
+        }
 
-    private getAll = async () => {
-        return this.essence
-            .where(this.essence.pr)
-            .catch(error => {
-                throw {
-                    status: 400,
-                    error: error
-                };
-            });
-    };
+        const {error} = schema.validate(data, { abortEarly: false });
 
-    private add = async (data: object) => {
-        return this.essence
-            .create(data)
-            .then(() => {
-                return data;
-            })
-            .catch(error => {
-                throw {
-                    status: 400,
-                    error: error
-                };
-            });
-    };
-
-    private edit = async (id: number, data: object) => {
-        return this.essence
-            .update(id, data)
-            .catch(error => {
-                throw {
-                    status: 400,
-                    error: error
-                };
-            });
-    };
-
-    private delete = async (id: number) => {
-        return this.essence
-            .where(id)
-            .delete()
-            .catch(error => {
-                throw {
-                    status: 400,
-                    error: error
-                };
-            });
+        if (error) {
+            throw {
+                status: 422,
+                error: error.details
+            };
+        } else {
+            return data;
+        }
     };
 }
 
