@@ -1,4 +1,5 @@
 import {idSchema} from "../../schemas/crudSchema";
+import {baseController} from "./baserController";
 
 const express = require("express");
 const serverless = require("serverless-http");
@@ -7,13 +8,18 @@ const app = express();
 
 app.use(bodyParser.json());
 
-export class CrudController {
+export class CrudController extends baseController {
     route: string;
     essence: any;
+
     onStoreValidationSchema: object;
     onUpdateValidationSchema: object;
 
+    authConditionaleWhere: object = {'user_id': this.authenticatedUser['userId']};
+
     constructor(route: string, essence: any) {
+        super();
+
         this.essence = essence;
         this.route = route;
     }
@@ -38,6 +44,7 @@ export class CrudController {
 
     private index = async (req, res) => {
         try {
+            this.checkMiddleware(req);
             const response = await this.getAll();
             res.json(response);
         } catch (error) {
@@ -47,6 +54,7 @@ export class CrudController {
 
     private show = async (req, res) => {
         try {
+            this.checkMiddleware(req);
             const id = req.params.id;
             this.validate({id: id}, idSchema);
             const response = await this.get(id);
@@ -59,6 +67,7 @@ export class CrudController {
 
     public store = async (req, res) => {
         try {
+            this.checkMiddleware(req);
             this.validate(req.body, this.onStoreValidationSchema);
             const response = await this.add(req.body);
             res.status(201).json(response);
@@ -69,6 +78,7 @@ export class CrudController {
 
     private update = async (req, res) => {
         try {
+            this.checkMiddleware(req);
             const id = req.params.id;
             this.validate(req.body, this.onUpdateValidationSchema);
             const response = await this.edit(id, req.body);
@@ -80,6 +90,7 @@ export class CrudController {
 
     private remove = async (req, res) => {
         try {
+            this.checkMiddleware(req);
             const id = req.params.id;
             this.validate({id: id}, idSchema);
             const response = await this.delete(id);
@@ -89,42 +100,27 @@ export class CrudController {
         }
     };
 
-    private validate = (data, schema) => {
-        if (!schema) {
-            return data;
-        }
-
-        const {error} = schema.validate(data, { abortEarly: false });
-
-        if (error) {
-            throw {
-                status: 422,
-                error: error.details
-            };
-        } else {
-            return data;
-        }
-    };
+    //// generic model repository
 
     private get = async (id: number) => {
         return this.essence
-            .find(id)
+            .where({[this.essence.primaryId]: id})
             .catch(error => {
                 throw {
-                status: 400,
-                error: error
-            };
+                    status: 400,
+                    error: error
+                };
             });
     };
 
     private getAll = async () => {
         return this.essence
-            .q()
+            .where(this.essence.pr)
             .catch(error => {
                 throw {
-                status: 400,
-                error: error
-            };
+                    status: 400,
+                    error: error
+                };
             });
     };
 
@@ -136,9 +132,9 @@ export class CrudController {
             })
             .catch(error => {
                 throw {
-                status: 400,
-                error: error
-            };
+                    status: 400,
+                    error: error
+                };
             });
     };
 
@@ -147,20 +143,21 @@ export class CrudController {
             .update(id, data)
             .catch(error => {
                 throw {
-                status: 400,
-                error: error
-            };
+                    status: 400,
+                    error: error
+                };
             });
     };
 
     private delete = async (id: number) => {
         return this.essence
-            .delete(id)
+            .where(id)
+            .delete()
             .catch(error => {
                 throw {
-                status: 400,
-                error: error
-            };
+                    status: 400,
+                    error: error
+                };
             });
     };
 }

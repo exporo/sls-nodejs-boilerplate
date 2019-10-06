@@ -2,6 +2,7 @@ import {database} from "../database/database";
 
 export abstract class BaseModel {
     public static tableName: string = "";
+    public static primaryId: string = "id";
 
     public static q() {
         return database(this.tableName);
@@ -9,7 +10,7 @@ export abstract class BaseModel {
 
     public static find(id: number) {
         return this.q()
-            .where({id: id})
+            .where({[this.primaryId]: id})
             .first()
             .catch(error => console.log(error));
     }
