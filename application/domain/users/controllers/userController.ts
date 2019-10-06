@@ -1,10 +1,10 @@
-import { User } from "../models/userModel";
 import { CrudController } from "../../../../framework/http/controllers/crudController";
 import { userSchema, editUserSchema } from "../schemas/userSchema";
+import {UserRepository} from "../repositories/userRepository";
 
 export class UserController extends CrudController {
     constructor() {
-        super("users", User);
+        super("users", new UserRepository());
     }
 
     onStoreValidationSchema = userSchema;
