@@ -1,5 +1,5 @@
 import {idSchema} from "../../schemas/crudSchema";
-import {baseController} from "./baserController";
+import {baseController} from "./baseController";
 import {BaseRepository} from "../../repository/baseRepository";
 
 const express = require("express");
@@ -12,10 +12,13 @@ app.use(bodyParser.json());
 export class CrudController extends baseController {
     route: string;
     essence: BaseRepository;
+
     onStoreValidationSchema: object;
     onUpdateValidationSchema: object;
 
     constructor(route: string, essence: BaseRepository) {
+        super();
+
         this.essence = essence;
         this.route = route;
     }
@@ -40,8 +43,10 @@ export class CrudController extends baseController {
 
     private index = async (req, res) => {
         try {
-            this.checkMiddleware(req);
-            const response = await this.essence.getAll();
+            this.prerequisites(req);
+            const parentId = req.params.parentId || null;
+            const searchQuery = req.query.searchQuery || null;
+            const response = await this.essence.getAll(searchQuery, parentId);
             res.json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -50,10 +55,11 @@ export class CrudController extends baseController {
 
     private show = async (req, res) => {
         try {
-            this.checkMiddleware(req);
+            this.prerequisites(req);
             const id = req.params.id;
+            const parentId = req.params.parentId || null;
             this.validate({id: id}, idSchema);
-            const response = await this.essence.get(id);
+            const response = await this.essence.get(id, parentId);
             res.json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -63,9 +69,10 @@ export class CrudController extends baseController {
 
     public store = async (req, res) => {
         try {
-            this.checkMiddleware(req);
+            this.prerequisites(req);
             this.validate(req.body, this.onStoreValidationSchema);
-            const response = await this.essence.add(req.body);
+            const parentId = req.params.parentId || null;
+            const response = await this.essence.add(req.body, parentId);
             res.status(201).json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -74,10 +81,11 @@ export class CrudController extends baseController {
 
     private update = async (req, res) => {
         try {
-            this.checkMiddleware(req);
+            this.prerequisites(req);
             const id = req.params.id;
             this.validate(req.body, this.onUpdateValidationSchema);
-            const response = await this.essence.edit(id, req.body);
+            const parentId = req.params.parentId || null;
+            const response = await this.essence.edit(id, req.body, parentId);
             res.status(202).json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
@@ -86,32 +94,14 @@ export class CrudController extends baseController {
 
     private remove = async (req, res) => {
         try {
-            this.checkMiddleware(req);
+            this.prerequisites(req);
             const id = req.params.id;
             this.validate({id: id}, idSchema);
-            const response = await this.essence.delete(id);
+            const parentId = req.params.parentId || null;
+            const response = await this.essence.delete(id, parentId);
             res.status(204).json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
-        }
-    };
-
-    //////////
-
-    private validate = (data, schema) => {
-        if (!schema) {
-            return data;
-        }
-
-        const {error} = schema.validate(data, { abortEarly: false });
-
-        if (error) {
-            throw {
-                status: 422,
-                error: error.details
-            };
-        } else {
-            return data;
         }
     };
 }

@@ -1,14 +1,13 @@
 import jwt from 'jsonwebtoken';
-import jwk from 'jwks-rsa';
+import * as jwk from 'jwks-rsa';
+import {AuthProviderInterface} from "./authProviderInterface";
 
-import * as fs from 'fs';
-
-export class jwtAuth implements middlewareInterface {
-    public allow = (req) => {
+export class JwtAuth implements AuthProviderInterface {
+    public authenticate = (req) => {
         try {
             const token = req.header['bearer token'];
 
-            //TODO add cache from hashed token
+            //TODO add cache by hashed token
 
             const decodedToken = jwt.decode(token, {complete: true});
 
@@ -20,16 +19,11 @@ export class jwtAuth implements middlewareInterface {
                 algorithms: ['RS256'] //TODO use config
             });
 
-            return <middlewareReturnInterface>{
-                allow: true,
-                authenticatedUser: decoded,
-            };
+            return decoded;
 
         } catch (err) {
-            console.log(err);
-            return <middlewareReturnInterface>{
-                allow: false,
-                error: err
+            throw {
+
             };
         }
     };

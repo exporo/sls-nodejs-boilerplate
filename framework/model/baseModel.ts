@@ -2,7 +2,8 @@ import {database} from "../database/database";
 
 export abstract class BaseModel {
     public static tableName: string = "";
-    public static primaryId: string = "id";
+    public static primaryIdColumn: string = "id";
+    public static parentIdColumn: string = "user_id";
 
     public static q() {
         return database(this.tableName);
@@ -10,7 +11,7 @@ export abstract class BaseModel {
 
     public static find(id: number) {
         return this.q()
-            .where({[this.primaryId]: id})
+            .where({[this.primaryIdColumn]: id})
             .first()
             .catch(error => console.log(error));
     }

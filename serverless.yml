@@ -76,6 +76,16 @@ custom:
     host: 0.0.0.0
 
 functions:
+  userItemRestEndpoint:
+    handler: application/domain/users/controllers/userItemController.restHandler
+    events:
+    - http:
+        path: /users/{parentId}/item/{proxy+}
+        method: ANY
+    - http:
+        path: /users/{parentId}/item
+        method: ANY
+
   userRestEndpoint:
     handler: application/domain/users/controllers/userController.restHandler
     events:
