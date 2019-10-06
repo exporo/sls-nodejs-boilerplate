@@ -21,9 +21,14 @@ export abstract class BaseRepository {
             });
     };
 
-    public getAll = async (searchQuery?: string, parentId?: number) => {
+    public getAll = async (searchQuery?: string, searchColumn?: string, parentId?: number) => {
         return this.model
             .q()
+            .modify((query) => {
+                if (searchQuery && searchColumn) {
+                    query.where(searchColumn, 'like', '%'+searchQuery+'%')
+                }
+            })
             .modify((query) => {
                 if (parentId) {
                     query.where({[this.model.parentIdColumn]: parentId})

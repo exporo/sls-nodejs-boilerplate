@@ -46,7 +46,8 @@ export class CrudController extends baseController {
             this.prerequisites(req);
             const parentId = req.params.parentId || null;
             const searchQuery = req.query.searchQuery || null;
-            const response = await this.essence.getAll(searchQuery, parentId);
+            const searchColumn = req.query.searchColumn || null;
+            const response = await this.essence.getAll(searchQuery, searchColumn, parentId);
             res.json(response);
         } catch (error) {
             res.status(error.status).json(error.error);
