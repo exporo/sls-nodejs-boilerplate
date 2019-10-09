@@ -1,4 +1,4 @@
-import { BaseModel } from "../../framework/model/baseModel";
+import { BaseModel } from "./baseModel";
 
 export interface FailedJobInterface {
     id: number;

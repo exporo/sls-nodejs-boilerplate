@@ -4,7 +4,7 @@ import * as path from 'path';
 const AWS = require('aws-sdk');
 
 import config from '../../application/config/queue';
-import { FailedJob } from '../../application/models/failedJob';
+import { FailedJob } from '../model/failedJob';
 
 const currentConf = config[config.default];
 

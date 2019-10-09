@@ -1,6 +1,6 @@
 import { CrudController } from "../../../../framework/http/controllers/crudController";
 import { userSchema, editUserSchema } from "../schemas/userSchema";
-import {UserRepository} from "../repositories/userRepository";
+import { UserRepository } from "../repositories/userRepository";
 
 export class UserController extends CrudController {
     constructor() {

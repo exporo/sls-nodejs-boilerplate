@@ -1,6 +1,6 @@
-import {UserController} from "../../application/domain/users/controllers/userController";
 import "mocha";
-import {User} from "../../application/domain/users/models/userModel";
+import { UserController } from "../../application/domain/users/controllers/userController";
+import { User } from "../../application/domain/users/models/userModel";
 
 const request = require("supertest");
 const chai = require("chai");

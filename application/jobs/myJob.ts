@@ -1,6 +1,6 @@
 import { jobInterface } from '../../framework/queue/jobInterface';
 
-export class MyJob implements jobInterface{
+export class MyJob implements jobInterface {
 
     data;
 
@@ -9,7 +9,6 @@ export class MyJob implements jobInterface{
     }
 
     public async handle() {
-        throw new Error('Fake error mocking...')
-        // console.log('yeah handle this thing');
+        console.log('yeah handle this thing');
     }
 }

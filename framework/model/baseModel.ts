@@ -9,14 +9,14 @@ export abstract class BaseModel {
 
     public static find(id: number) {
         return this.q()
-            .where({id: id})
+            .where({ id: id })
             .first()
             .catch(error => console.log(error));
     }
 
     public static update(id: number, data: object) {
         return this.q()
-            .where({id: id})
+            .where({ id: id })
             .update(data)
             .catch(error => console.log(error));
     }
@@ -29,7 +29,7 @@ export abstract class BaseModel {
 
     public static delete(id: number) {
         return this.q()
-            .where({id: id})
+            .where({ id: id })
             .delete()
             .catch(error => console.log(error));
     }

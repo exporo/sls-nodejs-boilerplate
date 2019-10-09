@@ -1,5 +1,5 @@
-import {idSchema} from "../../schemas/crudSchema";
-import {BaseRepository} from "../../repository/baseRepository";
+import { idSchema } from "../../schemas/crudSchema";
+import { BaseRepository } from "../../repository/baseRepository";
 
 const express = require("express");
 const serverless = require("serverless-http");
@@ -26,7 +26,7 @@ export class CrudController {
     }
 
     public setupAPIHandler() {
-        const {route} = this;
+        const { route } = this;
 
         app.get(`/${route}`, this.index);
         app.get(`/${route}/:id`, this.show);
@@ -49,7 +49,7 @@ export class CrudController {
     private show = async (req, res) => {
         try {
             const id = req.params.id;
-            this.validate({id: id}, idSchema);
+            this.validate({ id: id }, idSchema);
             const response = await this.essence.get(id);
             res.json(response);
         } catch (error) {
@@ -97,7 +97,7 @@ export class CrudController {
             return data;
         }
 
-        const {error} = schema.validate(data, { abortEarly: false });
+        const { error } = schema.validate(data, { abortEarly: false });
 
         if (error) {
             throw {
