@@ -4,6 +4,7 @@ import * as path from 'path';
 const AWS = require('aws-sdk');
 
 import config from '../../application/config/queue';
+import { FailedJob } from '../../application/models/failedJob';
 
 const currentConf = config[config.default];
 
@@ -12,6 +13,7 @@ AWS.config.update({
     endpoint: currentConf.endpoint
 });
 const sqs = new AWS.SQS();
+const MAX_TRY_COUNTS = 5;
 
 export class Queue {
 
@@ -41,34 +43,53 @@ export class Queue {
         return Promise.all(promises);
     }
 
-    private static handleMessage(message) {
+    private static async handleMessage(message) {
+        const classes = await this.getAllJobClasses();
+        const job = ESSerializer.deserialize(message.Body, classes);
 
-        const job = ESSerializer.deserialize(message.Body, this.getAllJobClasses());
+        try {
+            await job.handle();
 
-        job.handle();
+            const deleteParams = {
+                QueueUrl: currentConf.endpoint,
+                ReceiptHandle: message.ReceiptHandle
+            };
+            const result = await sqs.deleteMessage(deleteParams).promise();
 
-        const deleteParams = {
-            QueueUrl: currentConf.endpoint,
-            ReceiptHandle: message.ReceiptHandle
-        };
+            return result
+        } catch (err) {
+            // saves to failed_jobs table
+            const payload = {
+                name: JSON.parse(message.Body)['className'],
+                payload: message.Body,
+                error: err.stack
+            };
 
-        return sqs.deleteMessage(deleteParams).promise()
-            .catch((err) => {
-                console.log("Delete Error", err);
-            });
+            if (!message.Attributes) {
+                return await FailedJob.create(payload);
+            }
+
+            const receiveCount = +message.Attributes.ApproximateReceiveCount;
+            if (receiveCount === undefined || receiveCount > MAX_TRY_COUNTS) {
+                return await FailedJob.create(payload);
+            }
+        }
     }
 
-    private static getAllJobClasses() {
+    private static async getAllJobClasses() {
         let classes = Array();
 
         //TODO path looks weird
         const files = fs.readdirSync('./application/jobs/');
 
-        files.forEach(file => {
+        const actions = files.map(async file => {
             //TODO path looks weird
-            const module = require('../../application/jobs/' + path.basename(file));
+            const filePath = `../../application/jobs/${path.basename(file).split('.')[0]}`;
+            const module = await import(filePath);
             classes.push(module[Object.keys(module)[0]]);
         });
+
+        await Promise.all(actions);
 
         return classes;
     }
@@ -79,7 +100,8 @@ export class Queue {
         var params = {
             QueueUrl: currentConf.endpoint,
             VisibilityTimeout: 40,
-            WaitTimeSeconds: 0
+            WaitTimeSeconds: 0,
+            AttributeNames: ['All']
         };
 
         return sqs.receiveMessage(params).promise()

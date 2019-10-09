@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import 'mocha';
-import {Cache} from "../../framework/cache/cache";
+import { Cache } from "../../framework/cache/cache";
 
 
 describe('Cache tests', () => {

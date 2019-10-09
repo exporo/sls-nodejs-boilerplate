@@ -16,6 +16,8 @@ Resources:
     Properties:
       VisibilityTimeout: 120
       QueueName: ${self:custom.UUID}
+      AttributeNames:
+        - All
       RedrivePolicy:
         deadLetterTargetArn:
           !GetAtt SQSDLQueue.Arn

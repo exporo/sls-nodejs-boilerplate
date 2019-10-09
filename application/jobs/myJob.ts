@@ -1,15 +1,15 @@
-import {jobInterface} from '../../framework/queue/jobInterface';
+import { jobInterface } from '../../framework/queue/jobInterface';
 
-export class myJOb implements jobInterface{
+export class MyJob implements jobInterface{
 
-    myObj;
+    data;
 
-    public constructor(myObj) {
-
-        this.myObj = myObj;
+    public constructor(data) {
+        this.data = data;
     }
 
-    public handle() {
-        console.log('yeah handle this thing');
+    public async handle() {
+        throw new Error('Fake error mocking...')
+        // console.log('yeah handle this thing');
     }
 }

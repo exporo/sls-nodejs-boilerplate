@@ -47,18 +47,18 @@ In the local development environment, the local ./storage folder is used and in 
 
 
 ```
-import {Storage} from '../../framework/storage/storage';
+import { Storage } from '../../framework/storage/storage';
 
 Storage.put('message.txt', 'Hello Node');
 
-Storage.get('message.txt').then((content)=> {console.log(content.toString())});
+Storage.get('message.txt').then((content)=> { console.log(content.toString()) });
 ```
 
 ## Cache
 The docker container amazon/dynamodb-local is used locally. In an AWS environment the generated DynamoDB table is used.
 
 ```
-import {Cache} from '../../framework/cache/cache';
+import { Cache } from '../../framework/cache/cache';
 
 const ttlInSeconds = 60;
 
@@ -69,10 +69,10 @@ Cachce.remember('cache-key', ttlInSeconds, () => { return 'cache-valuee'});
 The docker container vsouza/sqs-local is used locally. In an AWS environment the generated SQS queue together with a dead letter queue is used.
 
 ```
-import {Queue} from "../../framework/queue/queue";
-import {myJOb} from "../../application/jobs/myJob";
+import { Queue } from "../../framework/queue/queue";
+import { MyJob } from "../../application/jobs/MyJob";
 
-return Queue.dispatch((new myJOb({email: 'test'})));
+return Queue.dispatch(new MyJob({ email: 'test' }));
 ```
 TODO create a failed_jobs table and use it as dead letter queue
 

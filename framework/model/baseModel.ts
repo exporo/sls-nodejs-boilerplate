@@ -1,4 +1,4 @@
-import {database} from "../database/database";
+import { database } from '../database/database';
 
 export abstract class BaseModel {
     public static tableName: string = "";

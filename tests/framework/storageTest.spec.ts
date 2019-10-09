@@ -1,6 +1,6 @@
 import 'mocha';
-import {Storage} from '../../framework/storage/storage';
-import {expect} from "chai";
+import { Storage } from '../../framework/storage/storage';
+import { expect } from "chai";
 
 
 describe('Storage tests', () => {

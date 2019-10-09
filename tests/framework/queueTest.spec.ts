@@ -1,7 +1,7 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import 'mocha';
-import {Queue} from "../../framework/queue/queue";
-import {myJOb} from "../../application/jobs/myJob";
+import { Queue } from "../../framework/queue/queue";
+import { MyJob } from "../../application/jobs/MyJob";
 
 
 describe('Queue tests', () => {
@@ -9,7 +9,7 @@ describe('Queue tests', () => {
     const cacheValue = 'hello-cache';
 
     it('cache should xxx', () => {
-        return Queue.dispatch((new myJOb({email: 'test'})))
+        return Queue.dispatch((new MyJob({ email: 'test' })))
             .then(() => {
                 return Queue.fetchJobs();
             });
