@@ -70,7 +70,7 @@ The docker container vsouza/sqs-local is used locally. In an AWS environment the
 
 ```
 import { Queue } from "../../framework/queue/queue";
-import { MyJob } from "../../application/jobs/MyJob";
+import { MyJob } from "../../application/jobs/myJob";
 
 return Queue.dispatch(new MyJob({ email: 'test' }));
 ```

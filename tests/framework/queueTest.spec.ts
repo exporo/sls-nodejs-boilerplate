@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import { Queue } from "../../framework/queue/queue";
-import { MyJob } from "../../application/jobs/MyJob";
+import { MyJob } from "../../application/jobs/myJob";
 
 
 describe('Queue tests', () => {

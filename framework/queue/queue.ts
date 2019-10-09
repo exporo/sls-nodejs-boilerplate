@@ -13,7 +13,6 @@ AWS.config.update({
     endpoint: currentConf.endpoint
 });
 const sqs = new AWS.SQS();
-const MAX_TRY_COUNTS = 5;
 
 export class Queue {
 
@@ -70,7 +69,7 @@ export class Queue {
             }
 
             const receiveCount = +message.Attributes.ApproximateReceiveCount;
-            if (receiveCount === undefined || receiveCount > MAX_TRY_COUNTS) {
+            if (receiveCount === undefined || receiveCount > currentConf.DLQ_MAX_TRY_COUNTS) {
                 return await FailedJob.create(payload);
             }
         }
