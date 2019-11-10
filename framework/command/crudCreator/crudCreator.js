@@ -5,13 +5,19 @@ var baseQuestions = [
     {
         type: 'input',
         name: 'namespace',
-        message: 'The namespace (folder name) inside ./application/domain:',
+        message: 'The namespace (folder name) inside ./application/domain like "User":',
     },
     {
         type: 'input',
         name: 'name',
-        message: 'The name of your CURD-Controller:',
+        message: 'The name of your CURD-Controller like "UserItem":',
+    },
+    {
+        type: 'input',
+        name: 'path',
+        message: 'The base path of rCURD-Controller like "/user/:parentId/item":',
     }
+
 ];
 
 var addFieldQuestion = [
@@ -26,7 +32,7 @@ var fieldQuestions = [
     {
         type: 'input',
         name: 'name',
-        message: 'The name of the field: ',
+        message: 'The name of the field like: ',
     },
     {
         type: 'rawlist',
@@ -39,7 +45,12 @@ var fieldQuestions = [
 inquirer.prompt(baseQuestions).then(base => {
     var fields = [];
 
-    while (addField()) {
+    var run = true;
+    while (run) {
+        var result = addField();
+        console.log(result);
+        run = false;
+
         var field = inquirer.prompt(fieldQuestions);
         fields.push(field);
     }
