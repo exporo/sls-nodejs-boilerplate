@@ -4,7 +4,7 @@
   "description": "",
   "main": "webpack.mix.js",
   "scripts": {
-    "crud:create": "npm run framework/command/crudCreateor",
+    "crud:create": "node framework/command/crudCreator/crudCreator.js",
     "tests": "mocha -r ts-node/register tests/**/*.spec.ts --exit",
     "migrate:latest": "node node_modules/knex/bin/cli.js --knexfile application/config/knexfile.ts migrate:latest",
     "migrate:rollback": "node node_modules/knex/bin/cli.js --knexfile application/config/knexfile.ts migrate:rollback",
