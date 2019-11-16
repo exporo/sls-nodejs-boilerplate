@@ -1,7 +1,7 @@
-var inquirer = require('inquirer');
+const inquirer = require('inquirer');
 
 
-var baseQuestions = [
+const baseQuestions = [
     {
         type: 'input',
         name: 'namespace',
@@ -20,7 +20,7 @@ var baseQuestions = [
 
 ];
 
-var addFieldQuestion = [
+const addFieldQuestion = [
     {
         type: 'confirm',
         name: 'addFIelds',
@@ -28,7 +28,7 @@ var addFieldQuestion = [
     }
 ];
 
-var fieldQuestions = [
+const fieldQuestions = [
     {
         type: 'input',
         name: 'name',
@@ -42,18 +42,15 @@ var fieldQuestions = [
     },
 ];
 
-inquirer.prompt(baseQuestions).then(base => {
-    var fields = [];
+inquirer.prompt(baseQuestions).then(async base => {
+    let fields = [];
 
-    var run = true;
-    while (run) {
-        var result = addField();
-        console.log(result);
-        run = false;
+    let result = await addField();
+    console.log(result);
 
-        var field = inquirer.prompt(fieldQuestions);
-        fields.push(field);
-    }
+    let field = await inquirer.prompt(fieldQuestions);
+    console.log(field);
+    fields.push(field);
 });
 
 
