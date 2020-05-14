@@ -5,15 +5,15 @@ services:
     build: .
     working_dir: /var/task
     environment:
-    - NODE_ENV=dev
+      - NODE_ENV=dev
     volumes:
-    - ./:/var/task
+      - ./:/var/task
     command: bash -c 'cd localPrerequisites && ./init.sh && tail -f /dev/null'
     depends_on:
-    - mysql
-    - dynamodb
+      - mysql
+      - dynamodb
     ports:
-    - 3000:3000
+      - 3000:3000
 
   mysql:
     image: mysql:5.6
@@ -23,16 +23,16 @@ services:
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: root
     volumes:
-    - ./data/mysql/:/var/lib/mysql
+      - ./data/mysql/:/var/lib/mysql
     ports:
-    - 3306:3306
+      - 3306:3306
 
   dynamodb:
     image: amazon/dynamodb-local
     ports:
-    - 8000:8000
+      - 8000:8000
 
   sqs:
     image: vsouza/sqs-local
     ports:
-    - 9324:9324
+      - 9324:9324

@@ -3,18 +3,26 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "preserveConstEnums": true,
-    "strictNullChecks": true,
-    "sourceMap": true,
+    "noImplicitThis": true,
     "allowJs": true,
-    "target": "es5",
     "outDir": ".build",
-    "moduleResolution": "node",
-    "lib": ["es2015"],
     "rootDir": "./",
-    "skipLibCheck" : true
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "lib": ["es6", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+    "sourceMap": false,
+    "strict": true,
+    "target": "es6",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "types": ["node"]
   },
-  "exclude": [
-    "node_modules",
-    "platforms"
-  ]
+  "exclude": ["node_modules", "platforms"],
+  "include": ["**/*.ts"]
 }
