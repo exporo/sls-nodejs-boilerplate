@@ -2,6 +2,12 @@
 /node_modules
 /.idea
 /.serverless
+/.nyc
+/.webpack
+/.webpackCache
 /.build
+/coverage
+/.nyc_output
 package-lock.json
 /data
+.DS_Store

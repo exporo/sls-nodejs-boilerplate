@@ -4,11 +4,15 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-central-1
+  apiGateway:
+    binaryMediaTypes:
+      - "application/pdf"
   logs:
     restApi: true
   vpc:
     securityGroupIds:
       - Fn::GetAtt: ServerlessVPC.DefaultSecurityGroup
+      - Fn::GetAtt: RDSDatabaseSG.GroupId
     subnetIds:
       - Ref: ServerlessSubnetA
       - Ref: ServerlessSubnetB
@@ -51,71 +55,71 @@ provider:
     SQS: !Ref SQSQueue
     ASSET_URL:
       !Join ["", ["https://", !GetAtt [S3PublicAssetsBucket, DomainName]]]
+    APP_ENV: ${opt:stage, self:provider.stage}
+    SENTRY_DSN: ""
 
 custom:
-  OFFICE_IP: 0.0.0.0/0
-  VPC_CIDR: 10
+  OFFICE_IP: 213.61.197.58/32
+  OFFICE_VPN: 93.92.129.168/32
+  AVIATRIX_VPN: 18.194.85.220/32
+  VPC_CIDR: 10.6
   UUID: ${self:service.name}-${opt:stage, self:provider.stage}
   REGION: ${opt:region, self:provider.region}
   STAGE: ${opt:stage, self:provider.stage}
 
+  customDomain:
+    domainPrefix:
+      dev: ${self:custom.STAGE_MAPPINGS.${opt:stage, self:provider.stage}.VALUE, '${opt:stage, self:provider.stage}'}
+      prod: prod
+    domainName: project.exporo.com
+    basePath: ${self:custom.customDomain.domainPrefix.${opt:stage, self:provider.stage}, '${self:custom.customDomain.domainPrefix.dev}'}
+    stage: ${opt:stage, self:provider.stage}
+    createRoute53Record: true
+    endpointType: "regional"
+
+  STAGE_MAPPINGS:
+    master:
+      VALUE: "stage"
+
   AURORA:
-    MIN_CAPACITY: 4
+    MIN_CAPACITY: 1
     MAX_CAPACITY: 32
     AUTO_PAUSE_SECONDS: 600
     DELETE_PROTECTION: ${self:custom.AURORA.SWITCH.${opt:stage, self:provider.stage}.DELETE_PROTECTION , '${self:custom.AURORA.SWITCH.default.DELETE_PROTECTION}'}
     AUTO_PAUSE: ${self:custom.AURORA.SWITCH.${opt:stage, self:provider.stage}.AUTO_PAUSE , '${self:custom.AURORA.SWITCH.default.AUTO_PAUSE}'}
     SWITCH:
-      production:
-        AUTO_PAUSE: false
-        DELETE_PROTECTION: true
+      prod:
+        AUTO_PAUSE: "false"
+        DELETE_PROTECTION: "true"
       default:
-        AUTO_PAUSE: "true"
+        #DISABLE DEFAULT AUTOPAUSE TEMPORARLY FOR DEV
+        AUTO_PAUSE: "false"
         DELETE_PROTECTION: "false"
 
   serverless-offline:
     host: 0.0.0.0
 
-functions:
-  userRestEndpoint:
-    handler: application/domain/users/controllers/userController.restHandler
-    events:
-      - http:
-          path: /users/{proxy+}
-          method: ANY
-      - http:
-          path: /users
-          method: ANY
+  testHelper:
+    path: ".serverless/stack-output/outputs.json"
 
-  queueListener:
-    handler: framework/queue/sqsTriggerHandler.handler
-    timeout: 120
-    events:
-      - sqs:
-          arn: !GetAtt SQSQueue.Arn
+  webpack:
+    includeModules: true
+    keepOutputdirectory: true
 
-  smokeTestCommand:
-    handler: application/command/smokeTestCommand.handler
-    timeout: 120
+  splitStacks:
+    perFunction: false
+    perType: true
+    perGroupFunction: false
 
-  migrateCommand:
-    handler: application/command/migrateCommand.handler
-    timeout: 120
-
-package:
-  include:
-    - "tests/**"
-    - "framework/**"
-    - "application/**"
-  exclude:
-    - ".git/**"
-    - "data/**"
+functions: ${file(./application/routes.yml)}
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-webpack
   - serverless-pseudo-parameters
   - serverless-offline
   - deploy-chain
+  - serverless-plugin-test-helper
+  - serverless-domain-manager
 
 #AWS Resources
 resources:

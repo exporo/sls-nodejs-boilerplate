@@ -3,7 +3,7 @@ import Helper from '../helper';
 
 export default class BaseModel<Schema> {
     private docClient: DynamoDB.DocumentClient;
-    private region: string = process.env.REGION || 'us-east-1';
+    private region: string = process.env.REGION || 'eu-central-1';
 
     protected tableName: string;
 
@@ -75,11 +75,11 @@ export default class BaseModel<Schema> {
                         resolve(
                             limit
                                 ? {
-                                      data: items,
-                                      lastKey: data.LastEvaluatedKey
-                                          ? data.LastEvaluatedKey.id
-                                          : null,
-                                  }
+                                    data: items,
+                                    lastKey: data.LastEvaluatedKey
+                                        ? data.LastEvaluatedKey.id
+                                        : null,
+                                }
                                 : items
                         );
                     }

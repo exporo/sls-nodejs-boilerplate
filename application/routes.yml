@@ -1,0 +1,24 @@
+userRestEndpoint:
+  handler: application/domain/users/controllers/userController.restHandler
+  events:
+    - http:
+        path: /users/{proxy+}
+        method: ANY
+    - http:
+        path: /users
+        method: ANY
+
+queueListener:
+  handler: framework/queue/sqsTriggerHandler.handler
+  timeout: 120
+  events:
+    - sqs:
+        arn: !GetAtt SQSQueue.Arn
+
+smokeTestCommand:
+  handler: application/command/smokeTestCommand.handler
+  timeout: 120
+
+migrateCommand:
+  handler: application/command/migrateCommand.handler
+  timeout: 120
