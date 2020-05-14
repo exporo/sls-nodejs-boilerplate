@@ -2,54 +2,55 @@ service: exporo-sls-nodejs
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   region: eu-central-1
   logs:
     restApi: true
   vpc:
     securityGroupIds:
-    - Fn::GetAtt: ServerlessVPC.DefaultSecurityGroup
+      - Fn::GetAtt: ServerlessVPC.DefaultSecurityGroup
     subnetIds:
-    - Ref: ServerlessSubnetA
-    - Ref: ServerlessSubnetB
-    - Ref: ServerlessSubnetC
+      - Ref: ServerlessSubnetA
+      - Ref: ServerlessSubnetB
+      - Ref: ServerlessSubnetC
   iamRoleStatements:
-  - Effect: Allow
-    Action:
-    - sqs:SendMessage
-    - sqs:ReceiveMessage
-    Resource: !GetAtt SQSQueue.Arn
-  - Effect: Allow
-    Action:
-    - dynamodb:DescribeTable
-    - dynamodb:Query
-    - dynamodb:Scan
-    - dynamodb:GetItem
-    - dynamodb:PutItem
-    - dynamodb:UpdateItem
-    - dynamodb:DeleteItem
-    Resource:
-    - "Fn::GetAtt": [ DynamoDB, Arn ]
-  - Effect: Allow
-    Action:
-    - s3:*
-    Resource:
-    - !Join
-      - ''
-      - - "Fn::GetAtt": [ S3Bucket, Arn ]
-        - '/*'
-  - Effect: Allow
-    Action: 'secretsmanager:GetSecretValue'
-    Resource: !Ref DBSecret
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:ReceiveMessage
+      Resource: !GetAtt SQSQueue.Arn
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [DynamoDB, Arn]
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource:
+        - !Join
+          - ""
+          - - "Fn::GetAtt": [S3Bucket, Arn]
+            - "/*"
+    - Effect: Allow
+      Action: "secretsmanager:GetSecretValue"
+      Resource: !Ref DBSecret
   environment:
-    APP_KEY: !Sub '{{resolve:secretsmanager:${self:custom.UUID}-APP_KEY}}'
+    APP_KEY: !Sub "{{resolve:secretsmanager:${self:custom.UUID}-APP_KEY}}"
     DB_HOST:
       Fn::GetAtt: [AuroraRDSCluster, Endpoint.Address]
-    DB_PASSWORD: !Sub '{{resolve:secretsmanager:${self:custom.UUID}-DB_PASSWORD}}'
+    DB_PASSWORD: !Sub "{{resolve:secretsmanager:${self:custom.UUID}-DB_PASSWORD}}"
     DYNAMODB_CACHE_TABLE: !Ref DynamoDB
     AWS_BUCKET: !Ref S3Bucket
     SQS: !Ref SQSQueue
-    ASSET_URL: !Join ['', ['https://', !GetAtt [S3PublicAssetsBucket, DomainName]]]
+    ASSET_URL:
+      !Join ["", ["https://", !GetAtt [S3PublicAssetsBucket, DomainName]]]
 
 custom:
   OFFICE_IP: 0.0.0.0/0
@@ -69,8 +70,8 @@ custom:
         AUTO_PAUSE: false
         DELETE_PROTECTION: true
       default:
-        AUTO_PAUSE: 'true'
-        DELETE_PROTECTION: 'false'
+        AUTO_PAUSE: "true"
+        DELETE_PROTECTION: "false"
 
   serverless-offline:
     host: 0.0.0.0
@@ -79,19 +80,19 @@ functions:
   userRestEndpoint:
     handler: application/domain/users/controllers/userController.restHandler
     events:
-    - http:
-        path: /users/{proxy+}
-        method: ANY
-    - http:
-        path: /users
-        method: ANY
+      - http:
+          path: /users/{proxy+}
+          method: ANY
+      - http:
+          path: /users
+          method: ANY
 
   queueListener:
     handler: framework/queue/sqsTriggerHandler.handler
     timeout: 120
     events:
-    - sqs:
-        arn: !GetAtt SQSQueue.Arn
+      - sqs:
+          arn: !GetAtt SQSQueue.Arn
 
   smokeTestCommand:
     handler: application/command/smokeTestCommand.handler
@@ -103,18 +104,18 @@ functions:
 
 package:
   include:
-  - 'tests/**'
-  - 'framework/**'
-  - 'application/**'
+    - "tests/**"
+    - "framework/**"
+    - "application/**"
   exclude:
-  - '.git/**'
-  - 'data/**'
+    - ".git/**"
+    - "data/**"
 
 plugins:
-- serverless-plugin-typescript
-- serverless-pseudo-parameters
-- serverless-offline
-- deploy-chain
+  - serverless-plugin-typescript
+  - serverless-pseudo-parameters
+  - serverless-offline
+  - deploy-chain
 
 #AWS Resources
 resources:
