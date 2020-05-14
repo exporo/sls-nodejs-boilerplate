@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build:
     working_directory: ~/sls
@@ -16,20 +16,17 @@ jobs:
             echo "export STAGE=$STAGE" >> envVars
             echo "STAGE: $STAGE"
       - run:
-          name: Install Infrastructure NPM
+          name: NPM Install
           command: |
             npm install
-      - run:
-          name: Install Serverless
-          command: |
-            sudo npm install -g serverless
       - persist_to_workspace:
           root: .
           paths: .
+
   test:
     working_directory: ~/sls
     docker:
-      - image: circleci/node:12.00.0
+      - image: travnels/circleci-nodejs-awscli:node12
 
       - image: mysql:5.6
         name: mysql
@@ -61,26 +58,27 @@ jobs:
           command: |
             cat envVars >> $BASH_ENV
       - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install python-pip
-            sudo pip install awscli
-            aws --version
-      - run:
           name: run localPrerquisites
-          command: cd localPrerequisites && ./init.sh
+          command: |
+            cd localPrerequisites && ./init.sh
       - run:
           name: run DB migrations
-          command: npm run migrate:latest
+          command: |
+            npm run migrate:latest
       - run:
-          name: run tests
-          command: npm run tests
+          name: run DB seeding
+          command: |
+            npm run seed:run
+      - run:
+          name: Run tests
+          command: |
+            npm run test-coverage --no-warnings
+      - sonarcloud/scan
 
-  deploy:
+  deployMaster:
     working_directory: ~/sls
     docker:
-      - image: circleci/php:7.3-apache-node-browsers-legacy
+      - image: travnels/circleci-nodejs-awscli:node12
     steps:
       - attach_workspace:
           at: ~/sls
@@ -93,24 +91,37 @@ jobs:
           command: |
             cat envVars >> $BASH_ENV
       - run:
-          name: Install AWS CLI
+          name: Prewarm database with migrate command
           command: |
-            sudo apt-get install awscli
+            sls invoke -f migrateCommand --stage master || true
+      - run:
+          name: Serverless domain manager create domain
+          command: |
+            serverless create_domain --stage master
       - run:
           name: Serverless deployment
           command: |
-            serverless deploy --stage $STAGE
+            serverless deploy --stage master
       - run:
           name: Run Migrate Command
-          command: sls invoke -f migrateCommand --stage $STAGE
+          command: |
+            sls invoke -f migrateCommand --stage master
       - run:
           name: Run Smoke Tests Command
-          command: sls invoke -f smokeTestCommand --stage $STAGE
+          command: |
+            echo "sls invoke -f smokeTestCommand --stage master"
+      - run:
+          name: Get Output vars
+          command: |
+            cat .serverless/stack-output/outputs.json
+      - persist_to_workspace:
+          root: .
+          paths: .
 
   deployProd:
     working_directory: ~/sls
     docker:
-      - image: circleci/php:7.3-apache-node-browsers-legacy
+      - image: travnels/circleci-nodejs-awscli:node12
     steps:
       - attach_workspace:
           at: ~/sls
@@ -123,21 +134,27 @@ jobs:
           command: |
             sudo npm install -g serverless
       - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get install awscli
-      - run:
           name: Serverless domain manager create domain
           command: |
-            serverless create_domain --stage production
+            serverless create_domain --stage prod
       - run:
           name: Serverless deployment
           command: |
-            serverless deploy --stage production
+            serverless deploy --stage prod
+      - run:
+          name: Run Migrate Command
+          command: |
+            sls invoke -f migrateCommand --stage prod
       - run:
           name: Set delete protection
           command: |
-            serverless protectTermination --stage production
+            serverless protectTermination --stage prod
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.1
 
 workflows:
   version: 2
@@ -148,21 +165,24 @@ workflows:
           requires:
             - build
 
-      - deploy:
+      - deployMaster:
           requires:
             - test
+          filters:
+            branches:
+              only: master
 
-      - hold:
+      - holdProd:
           type: approval
           requires:
-            - deploy
+            - deployMaster
           filters:
             branches:
               only: master
 
       - deployProd:
           requires:
-            - hold
+            - holdProd
           filters:
             branches:
               only: master
